@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  client:
+    build: ./client
+    dockerfile: Dockerfile
+    networks:
+      - app-network:
+        aliases:
+          - client
+    ports:
+      - 8080:8080
+    volumes:
+      - ./client:/app
+    command: npm run serve
+  env_file:
+    - ./client/.env
+
+  server:
+    build: ./api
+    dockerfile: Dockerfile
+    networks:
+      - app-network:
+        aliases:
+          - api
+    ports:
+      - 8000:8000
+    volumes:
+      - ./api:/app
+    command: php artisan serve
