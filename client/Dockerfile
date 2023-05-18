@@ -1,22 +1,23 @@
+# Utilise une image de base Node.js LTS (Long Term Support) basée sur Alpine Linux
 FROM node:lts-alpine
 
-# install simple http server for serving static content
-RUN npm install -g http-server
-
-# make the 'app' folder the current working directory
+# Définit le répertoire de travail dans le conteneur
 WORKDIR /app
 
-# copy both 'package.json' and 'package-lock.json' (if available)
-COPY package*.json ./
+# Copie le package.json et le package-lock.json dans le conteneur
+COPY ./client/package*.json ./
 
-# install project dependencies
+# Installe les dépendances du projet
 RUN npm install
 
-# copy project files and folders to the current working directory (i.e. 'app' folder)
+# Copie tous les fichiers du projet dans le conteneur
 COPY . .
 
-# build app for production with minification
+# Construit l'application pour la production
 RUN npm run build
 
+# Expose le port utilisé par l'application (facultatif)
 EXPOSE 8080
-CMD ["http-server", "dist","npm","run","serve"]
+
+# Définit la commande par défaut pour démarrer l'application
+CMD [ "npm", "run", "serve" ]
