@@ -15,27 +15,84 @@ body {
   background-repeat: no-repeat;
   background-attachment: fixed;
   background-size: 100% 100%;
-}
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+  font-family: "Sen", sans-serif;
 }
 .bgBlack {
   background: #2b2b2b;
 }
-nav {
-  padding: 30px;
+.bgBlue {
+  background: #bffff1;
 }
-
-nav a {
-  font-weight: bold;
-  color: #2c3e50;
+.bgYellow {
+  background: #ffc515;
 }
-
-nav a.router-link-exact-active {
-  color: #42b983;
+.bgOrange {
+  background: #ff7800;
+}
+.bgRed {
+  background: #ff2a2a;
+}
+.white {
+  color: white;
+}
+.black {
+  color: #2b2b2b;
+}
+.Blue {
+  color: #bffff1;
+}
+.yellow {
+  color: #ffc515;
+}
+.Orange {
+  color: #ff7800;
+}
+.Red {
+  color: #ff2a2a;
+}
+p {
+  margin: 0;
+}
+.p-XXS {
+  font-size: 10px;
+}
+.p-XS {
+  font-size: 12px;
+}
+.p-S {
+  font-size: 15px;
+}
+.p-M {
+  font-size: 20px;
+}
+.p-L {
+  font-size: 25px;
+}
+.p-XL {
+  font-size: 35px;
+}
+.p-XXL {
+  font-size: 42px;
+}
+.p-XXXL {
+  font-size: 50px;
+}
+.col {
+  display: flex;
+  flex-direction: column;
+}
+.fields {
+  align-items: flex-start;
+  width: 100%;
+}
+.forms {
+  gap: 20px;
+  align-items: center;
+}
+button {
+  padding: 10px 20px;
+  margin: 5px;
+  border: none;
+  border-radius: 5px;
 }
 </style>

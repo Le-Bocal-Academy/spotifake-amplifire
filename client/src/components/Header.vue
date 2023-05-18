@@ -4,8 +4,8 @@
       <img alt="Vue logo" src="../assets/logo.png" />
     </div>
     <div>
-      <button>Inscription</button>
-      <button>Connexion</button>
+      <button class="bgYellow black">Inscription</button>
+      <button class="bgBlue black">Connexion</button>
     </div>
   </div>
 </template>
