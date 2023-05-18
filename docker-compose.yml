@@ -15,19 +15,19 @@ services:
     env_file:
       - ./client/.env
 
-  server:
-    build:
-      context: ./api
-      dockerfile: Dockerfile
-    networks:
-      - app-network
-    ports:
-      - 8000:8000
-    volumes:
-      - ./api:/app
-    command: php artisan serve
-    env_file:
-      - ./api/.env
+  # server:
+  #   build:
+  #     context: ./api
+  #     dockerfile: Dockerfile
+  #   networks:
+  #     - app-network
+  #   ports:
+  #     - 8000:8000
+  #   volumes:
+  #     - ./api:/app
+  #   command: php artisan serve
+  #   env_file:
+  #     - ./api/.env
 
   # mysql_DB:
   #   image: mysql:lastest
