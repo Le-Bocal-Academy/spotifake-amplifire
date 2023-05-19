@@ -6,12 +6,14 @@
       <p class="p-L">Souscrivez à notre offre unique.</p>
     </div>
     <Offer />
+    <Footer />
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
 import Header from "@/components/Header.vue";
+import Footer from "@/components/Footer.vue";
 import Offer from "@/components/Offer.vue";
 
 export default {
@@ -19,6 +21,7 @@ export default {
   components: {
     Header,
     Offer,
+    Footer,
   },
 };
 </script>

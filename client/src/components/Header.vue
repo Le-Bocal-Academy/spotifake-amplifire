@@ -1,11 +1,11 @@
 <template>
   <div class="bgBlack header">
     <div class="logo">
-      <img alt="Vue logo" src="../assets/logo.png" />
+      <img alt="Logo" src="../assets/logo.png" />
     </div>
     <div>
-      <button class="bgYellow black">Inscription</button>
-      <button class="bgBlue black">Connexion</button>
+      <button class="bgYellow black p-S">Inscription</button>
+      <button class="bgBlue black p-S">Connexion</button>
     </div>
   </div>
 </template>
