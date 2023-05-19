@@ -1,20 +1,20 @@
 version: "3.8"
 
 services:
-  #   # client:
-
-  #   #   build:
-  #   #     context: ./client
-  #   #     dockerfile: Dockerfile
-  #   #   networks:
-  #   #     - app-network
-  #   #   ports:
-  #   #     - 8080:8080
-  #   #   volumes:
-  #   #     - ./client:/app
-  #   #   command: npm run serve
-  #   #   env_file:
-  #   #     - ./client/.env
+  # client:
+  #   container_name: client
+  #   build:
+  #     context: ./client
+  #     dockerfile: Dockerfile
+  #   volumes:
+  #     - ./client:/app
+  #   ports:
+  #     - 8080:8080
+  #   command: npm run serve
+  #   env_file:
+  #     - ./client/.env
+  #   networks:
+  #     - app-network
 
   api:
     container_name: api
@@ -25,32 +25,44 @@ services:
       - ./api:/var/www/html
     ports:
       - 8000:80
-    # command: php artisan serve
     env_file:
       - ./api/.env
+    networks:
+      - app-network
+    # depends_on:
+    #   - mysql_DB
+    # mysql_DB:
+    #   container_name: mysql_DB
+    #   image: mysql:latest
+    #   env_file:
+    #     - ./api/.env
+    #   environment:
+    #     MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    #     MYSQL_DATABASE: ${MYSQL_DATABASE}
+    #     MYSQL_USER: ${MYSQL_USER}
+    #     MYSQL_USER_PASSWORD: ${MYSQL_USER_PASSWORD}
+    #   ports:
+    #     - 3306:3306
+    #   networks:
+    #     - app-network
 
-# mysql_DB:
-#   image: mysql:lastest
-#   env_file:
-#     - ./api/.env
-#   environment:
-#     MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-#     MYSQL_DATABASE: ${MYSQL_DATABASE}
-#     MYSQL_USER: ${MYSQL_USER}
-#     MYSQL_USER_PASSWORD: ${MYSQL_USER_PASSWORD}
-#   ports:
-#     - 3306:3306
+    # phpmyadmin:
+    #   container_name: phpmyadmin
+    #   image: phpmyadmin/phpmyadmin:latest
+    #   env_file:
+    #     - ./api/.env
+    #   links:
+    #     - mysql_DB:db
+    #   ports:
+    #     - 8081:80
+    #   environment:
+    #     MYSQL_USER: ${MYSQL_USER}
+    #     MYSQL_PASSWORD: ${MYSQL_USER_PASSWORD}
+    #     MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    #     PMA_HOST: ${PMA_HOST}
+    #   networks:
+    #     - app-network
 
-# phpmyadmin:
-#   image: phpmyadmin/latest
-#   env_file:
-#     - ./api/.env
-#   links:
-#     - mysql_DB:db
-#   ports:
-#     - 8081:80
-#   environment:
-#     MYSQL_USER: ${MYSQL_USER}
-#     MYSQL_PASSWORD: ${MYSQL_USER_PASSWORD}
-#     MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-#     PMA_HOST: ${PMA_HOST}
+networks:
+  app-network:
+    driver: bridge
