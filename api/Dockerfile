@@ -14,10 +14,10 @@ RUN a2enmod rewrite
 RUN docker-php-ext-install pdo_mysql zip
 
 # Copy the Apache configuration file with ServerName directive
-COPY apache-config.conf /etc/apache2/conf-available/
+COPY ./docker-config/apache.conf /etc/apache2/conf-available/
 
 # Enable the new Apache configuration
-RUN a2enconf apache-config.conf
+RUN a2enconf apache.conf
 
 # Copy the application code
 COPY . /var/www/html
