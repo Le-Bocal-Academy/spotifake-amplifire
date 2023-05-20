@@ -1,30 +1,98 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
-  <router-view/>
+  <router-view />
 </template>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+body {
+  margin: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 42, 42, 0.8),
+    rgba(255, 120, 0, 0.8),
+    rgba(255, 197, 21, 0.8),
+    rgba(191, 255, 241, 0.8)
+  );
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: 100% 100%;
+  font-family: "Sen", sans-serif;
 }
-
-nav {
-  padding: 30px;
+.bgBlack {
+  background: #2b2b2b;
 }
-
-nav a {
-  font-weight: bold;
-  color: #2c3e50;
+.bgBlue {
+  background: #bffff1;
 }
-
-nav a.router-link-exact-active {
-  color: #42b983;
+.bgYellow {
+  background: #ffc515;
+}
+.bgOrange {
+  background: #ff7800;
+}
+.bgRed {
+  background: #ff2a2a;
+}
+.white {
+  color: white;
+}
+.black {
+  color: #2b2b2b;
+}
+.Blue {
+  color: #bffff1;
+}
+.yellow {
+  color: #ffc515;
+}
+.Orange {
+  color: #ff7800;
+}
+.Red {
+  color: #ff2a2a;
+}
+p {
+  margin: 0;
+}
+.p-XXS {
+  font-size: 10px;
+}
+.p-XS {
+  font-size: 12px;
+}
+.p-S {
+  font-size: 15px;
+}
+.p-M {
+  font-size: 20px;
+}
+.p-L {
+  font-size: 25px;
+}
+.p-XL {
+  font-size: 35px;
+}
+.p-XXL {
+  font-size: 42px;
+}
+.p-XXXL {
+  font-size: 50px;
+}
+.col {
+  display: flex;
+  flex-direction: column;
+}
+.fields {
+  align-items: flex-start;
+  width: 100%;
+}
+.forms {
+  gap: 20px;
+  align-items: center;
+}
+button {
+  padding: 10px 20px;
+  margin: 5px;
+  border: none;
+  border-radius: 5px;
 }
 </style>
