@@ -33,7 +33,7 @@
           En cliquant sur "Inscription", tu acceptes les conditions générales
           d'utilisation et la politique de protection des données
         </p>
-        <button class="bgRed white p-S">s'inscrire</button>
+        <button class="bgRed white p-S">Inscription</button>
         <p class="p-XS">
           Déjà inscrit(e) sur AmpliFire ? <a href="">Connexion</a>
         </p>
