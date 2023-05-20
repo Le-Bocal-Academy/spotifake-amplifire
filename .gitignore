@@ -3,4 +3,4 @@
 .env
 
 # vscode settings
-.vscode
+./vscode
