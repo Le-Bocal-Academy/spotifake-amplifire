@@ -34,3 +34,13 @@ RUN composer install
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+
+# Give grant access to the phpmyadmin
+RUN chown -R www-data:www-data /var/www/html/public/phpmyadmin
+RUN chmod -R 775 /var/www/html/public/phpmyadmin
+
+# # Create the database if it doesn't exist yet
+# RUN php artisan db:create ${MYSQL_DATABASE}
+
+# # Do the migrations
+# RUN php artisan migrate
