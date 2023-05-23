@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Test;
@@ -15,8 +16,13 @@ use App\Http\Controllers\Test;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/forgotPassword', [AuthController::class, 'forgotPassword'])->name('password.reset');
 
-Route::get('/test', [Test::class, 'index']);
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/test', [AuthController::class, 'test']);
+    Route::get('/logout', [AuthController::class, 'logout']);
+
+    // rentrer le fichier songs.json dans la base de données et faire une route qui renvoie tous les sons
+});

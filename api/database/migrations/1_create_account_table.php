@@ -20,7 +20,6 @@ return new class extends Migration
             $table->string('lastname');
             $table->string('email');
             $table->string('password');
-            $table->string('remember_token');
             $table->dateTime('created_at');
             $table->dateTime('updated_at');
         });

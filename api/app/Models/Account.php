@@ -6,8 +6,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class Account extends Model
+class Account extends Authenticatable
 {
     use HasFactory, Notifiable, HasApiTokens;
 
@@ -19,8 +20,8 @@ class Account extends Model
 
     protected $fillable = [
         'nickname',
-        'first_name',
-        'last_name',
+        'firstname',
+        'lastname',
         'email',
         'password',
     ];
@@ -30,7 +31,7 @@ class Account extends Model
      * @var array<int, string>
      */
     protected $hidden = [
-        'remember_token',
+        'password',
     ];
 
     /**
@@ -39,6 +40,5 @@ class Account extends Model
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'password' => 'hashed',
     ];
 }
