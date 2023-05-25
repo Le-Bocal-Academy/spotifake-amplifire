@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Account;
+use Illuminate\Validation\ValidationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
@@ -18,15 +19,36 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
-        // TODO obliger des mots de passe plus sécurisés
         try {
             $validatedData = $request->validate([
-                'nickname' => 'required|string|max:55',
-                'firstname' => 'required|string|max:55',
-                'lastname' => 'required|string|max:55',
+                'nickname' => 'required|string|unique:accounts|max:20',
+                'firstname' => 'required|string|max:20',
+                'lastname' => 'required|string|max:20',
                 'email' => 'email|required|unique:accounts',
-                // le body doit inclure les champs "password" et "password_confirmation"
-                'password' => 'required|confirmed'
+                'password' => [
+                    'required',
+                    'confirmed',
+                    'min:8',
+                    'regex:/[a-z]/',
+                    'regex:/[A-Z]/',
+                    'regex:/[0-9]/',
+                    'regex:/[@$!%*#?&]/', // Le mot de passe doit comporter au moins un caractère spécial
+                ],
+            ], [
+                'nickname.required' => 'Le pseudo est requis',
+                'nickname.unique' => 'Le pseudo n\'est pas valide',
+                'nickname.max' => 'Le pseudo ne peut pas dépasser 20 caractères',
+                'firstname.required' => 'Le prénom est requis',
+                'firstname.max' => 'Le prénom ne peut pas dépasser 20 caractères',
+                'lastname.required' => 'Le nom est requis',
+                'lastname.max' => 'Le nom ne peut pas dépasser 20 caractères',
+                'email.required' => 'L\'email est requis',
+                'email.email' => 'L\'email n\'est pas valide',
+                'email.unique' => 'L\'email n\'est pas valide',
+                'password.required' => 'Le mot de passe est requis',
+                'password.confirmed' => 'La confirmation du mot de passe ne correspond pas',
+                'password.min' => 'Le mot de passe doit contenir au moins 8 caractères',
+                'password.regex' => 'Le mot de passe doit contenir au moins une lettre minuscule, une lettre majuscule, un chiffre et un caractère spécial',
             ]);
 
 
@@ -35,6 +57,9 @@ class AuthController extends Controller
             Account::create($validatedData);
 
             return response(['message' => 'Utilisateur créé'], 201);
+        } catch (ValidationException $exception) {
+
+            return response(['errors' => $exception->errors()], 422);
         } catch (\Exception $exception) {
             Log::error($exception); // l'erreur s'affiche dans /storage/logs/laravel.log
             return response(['erreur' => 'Une erreur s\'est produite'], 500);
@@ -58,7 +83,7 @@ class AuthController extends Controller
 
             // retourne l'access token au front qui doit le stocker en "localstorage" 
             // puis utiliser ce token dans le header "Authorization" de toutes les autre requêtes
-            return $account->createToken('token')->plainTextToken;
+            return response(['token' => $account->createToken('token')->plainTextToken]);
         } catch (\Exception $exception) {
             Log::error($exception); // l'erreur s'affiche dans /storage/logs/laravel.log            return response(['erreur' => 'Une erreur s\'est produite'], 500);
         }
@@ -84,8 +109,7 @@ class AuthController extends Controller
         }
     }
 
-    // se renseigner sur "mailpit", créer un email et ajouter les infos de l'adresse au .env "MAIL_***"
-    // vérifier les deux fonctions suivantes
+    // TODO améliorer les deux fonctions suivantes avec des try catch, logs et messages renvoyés au front
     public function forgotPassword(Request $request)
     {
         $request->validate(['email' => 'required|email']);
@@ -97,11 +121,6 @@ class AuthController extends Controller
         return $status === Password::RESET_LINK_SENT
             ? response()->json(['status' => __($status)], 200)
             : response()->json(['email' => [__($status)]], 400);
-    }
-
-    public function test(Request $request)
-    {
-        return response()->json(['user' => $request->user()], 200);
     }
 
 
@@ -129,5 +148,10 @@ class AuthController extends Controller
         return $status === Password::PASSWORD_RESET
             ? response()->json(['status' => __($status)], 200)
             : response()->json(['email' => [__($status)]], 400);
+    }
+
+    public function test(Request $request)
+    {
+        return response()->json(['user' => $request->user()], 200);
     }
 }
