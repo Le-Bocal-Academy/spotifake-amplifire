@@ -1,36 +1,6 @@
 version: "3.8"
 
 services:
-  client:
-    container_name: client
-    build:
-      context: ./client
-      dockerfile: Dockerfile
-    volumes:
-      - ./client:/app
-    ports:
-      - 8080:8080
-    command: npm run serve
-    env_file:
-      - ./client/.env
-    networks:
-      - app-network
-
-  api:
-    container_name: api
-    build:
-      context: ./api
-      dockerfile: Dockerfile
-    volumes:
-      - ./api:/var/www/html
-    ports:
-      - 8000:80
-    env_file:
-      - .env
-    networks:
-      - app-network
-    depends_on:
-      - mysql_DB
 
   mysql_DB:
     container_name: mysql_DB
@@ -39,7 +9,7 @@ services:
       - .env
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_DATABASE: ${DB_DATABASE}
       MYSQL_USER: ${DB_USERNAME}
       MYSQL_PASSWORD: ${DB_PASSWORD}
     volumes:
@@ -66,8 +36,41 @@ services:
     networks:
       - app-network
 
+  client:
+    container_name: client
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    volumes:
+      - ./client:/app
+    ports:
+      - 8080:8080
+    command: npm run serve
+    env_file:
+      - ./client/.env
+    networks:
+      - app-network
+
+  api:
+    container_name: api
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    volumes:
+      - ./api:/var/www/app
+    ports:
+      - 8000:80
+    command: sh -c "php artisan migrate && apachectl -D FOREGROUND"
+    env_file:
+      - .env
+    networks:
+      - app-network
+    depends_on:
+      - mysql_DB
+
 volumes:
   db_data:
+
 
 networks:
   app-network:
