@@ -17,23 +17,18 @@
             Instagram
           </button>
         </div>
-        <div class="col fields">
-          <label for="" class="p-S">pseudo</label>
-          <input type="text" />
-        </div>
-        <div class="col fields">
-          <label for="" class="p-S">adresse email</label>
-          <input type="text" />
-        </div>
-        <div class="col fields">
-          <label for="" class="p-S">mot de passe</label>
-          <input type="text" />
-        </div>
+        <Field label="pseudo" fieldType="text" />
+        <Field label="nom" fieldType="text" />
+        <Field label="prénom" fieldType="text" />
+        <Field label="adresse email" fieldType="text" />
+        <Field label="mot de passe" fieldType="text" />
+        <Field label="confirmation du mot de passe" fieldType="text" />
+
         <p class="p-XS">
           En cliquant sur "Inscription", tu acceptes les conditions générales
           d'utilisation et la politique de protection des données
         </p>
-        <button class="bgRed white p-S">Inscription</button>
+        <RedButton text="Inscription" />
         <p class="p-XS">
           Déjà inscrit(e) sur AmpliFire ? <a href="">Connexion</a>
         </p>
@@ -46,6 +41,18 @@
     </article>
   </section>
 </template>
+
+<script>
+import Field from "../components/UI/fields.vue";
+import RedButton from "../components/UI/redButton.vue";
+
+export default {
+  components: {
+    Field,
+    RedButton,
+  },
+};
+</script>
 
 <style scoped>
 section {

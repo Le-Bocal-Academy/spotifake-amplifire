@@ -18,7 +18,7 @@ body {
   font-family: "Sen", sans-serif;
 }
 .bgBlack {
-  background: #2b2b2b;
+  background: #26272b;
 }
 .bgBlue {
   background: #bffff1;

@@ -3,15 +3,25 @@
     <div class="logo">
       <img alt="Logo" src="../assets/logo.png" />
     </div>
-    <div>
-      <button class="bgYellow black p-S">Inscription</button>
-      <button class="bgBlue black p-S">Connexion</button>
+    <div class="nav">
+      <BlueButton text="Connexion" link="/login" />
+      <SettingButton />
     </div>
   </div>
 </template>
 
 <script>
-export default {};
+import YellowButton from "../components/UI/yellowButton.vue";
+import BlueButton from "../components/UI/blueButton.vue";
+import SettingButton from "./UI/settingButton.vue";
+
+export default {
+  components: {
+    YellowButton,
+    BlueButton,
+    SettingButton,
+  },
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -30,5 +40,11 @@ export default {};
 
 .logo img {
   width: 100%;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 20px;
 }
 </style>
