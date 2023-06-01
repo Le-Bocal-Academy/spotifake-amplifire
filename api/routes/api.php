@@ -1,9 +1,8 @@
 <?php
 
 use App\Http\Controllers\AuthController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\DiskController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Test;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,6 +20,9 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/forgotPassword', [AuthController::class, 'forgotPassword']);
 Route::post('/resetPassword', [AuthController::class, 'resetPassword']);
 
+Route::get('/disk', [DiskController::class, 'index']);
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/logout', [AuthController::class, 'logout']);
+    // Route::get('/disk', [DiskController::class, 'index']);
 });
