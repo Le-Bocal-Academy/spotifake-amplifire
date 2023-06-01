@@ -1,24 +1,41 @@
-# Utilisez l'image officielle de PHP 8.1 comme image de base avec Apache
-FROM php:8.1-apache
+# Use the official PHP 8.2-apache image
+FROM php:8.2-apache
 
-# Activez le module Apache mod_rewrite
+# Install dependencies
+RUN apt-get update && \
+    apt-get install -y \
+    libzip-dev \
+    zip
+
+# Enable mod_rewrite
 RUN a2enmod rewrite
 
-# Librairies nécessaires à l'installation de Laravel
-RUN apt-get update && apt-get install -y \
-    libmariadb-dev
+# Install PHP extensions
+RUN docker-php-ext-install pdo_mysql zip
 
-# Installer composer depuis l'image officielle de composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+# Copy the Apache configuration file with ServerName directive
+COPY ./docker-config/apache.conf /etc/apache2/conf-available/
 
-# Installez les dépendances de PHP nécessaires à Laravel pour communiquer avec MySQL
-RUN docker-php-ext-install pdo_mysql
+# Enable the new Apache configuration
+RUN a2enconf apache.conf
 
-# Définissez le répertoire racine de l'application Laravel
-WORKDIR /app
+RUN rm -f /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-enabled/000-default.conf
 
-# Copiez les fichiers de l'application Laravel à la racine du conteneur
-COPY . .
+# Copy the application code
+COPY . /var/www/app
 
-# Lancez le serveur intégré de PHP pour exécuter l'application Laravel
-CMD ["php", "artisan", "serve"]
+# Set the working directory
+WORKDIR /var/www/app
+
+# Install composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+# Install project dependencies
+RUN composer install
+
+# Set permissions
+RUN chown -R www-data:www-data /var/www/app/storage /var/www/app/bootstrap/cache
+RUN chmod -R 775 /var/www/app/storage /var/www/app/bootstrap/cache
+
+# Expose port 80
+EXPOSE 80
