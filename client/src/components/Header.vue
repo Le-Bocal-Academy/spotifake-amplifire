@@ -4,7 +4,9 @@
       <img alt="Logo" src="../assets/logo.png" />
     </div>
     <div class="nav">
+      <YellowButton text="Inscription" link="/" />
       <BlueButton text="Connexion" link="/login" />
+      <BlueButton text="Déconnexion" @click="logout" />
       <SettingButton />
     </div>
   </div>
@@ -14,12 +16,31 @@
 import YellowButton from "../components/UI/yellowButton.vue";
 import BlueButton from "../components/UI/blueButton.vue";
 import SettingButton from "./UI/settingButton.vue";
+import config from "../config.js";
 
 export default {
   components: {
     YellowButton,
     BlueButton,
     SettingButton,
+  },
+  methods: {
+    async logout() {
+      const token = localStorage.getItem("token");
+      const options = {
+        method: "get",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token,
+        },
+      };
+      const url = config.url;
+      const data = await fetch(url + "/logout", options);
+      if (data.status === 200) {
+        localStorage.clear();
+      }
+    },
   },
 };
 </script>

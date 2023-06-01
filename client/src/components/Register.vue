@@ -17,12 +17,20 @@
             Instagram
           </button>
         </div>
-        <Field label="pseudo" fieldType="text" />
-        <Field label="nom" fieldType="text" />
-        <Field label="prénom" fieldType="text" />
-        <Field label="adresse email" fieldType="text" />
-        <Field label="mot de passe" fieldType="text" />
-        <Field label="confirmation du mot de passe" fieldType="text" />
+        <Field label="pseudo" fieldType="text" @getValue="getNickname" />
+        <Field label="nom" fieldType="text" @getValue="getLastname" />
+        <Field label="prénom" fieldType="text" @getValue="getFirstname" />
+        <Field label="adresse email" fieldType="text" @getValue="getEmail" />
+        <Field
+          label="mot de passe"
+          fieldType="password"
+          @getValue="getPassword"
+        />
+        <Field
+          label="confirmation du mot de passe"
+          fieldType="password"
+          @getValue="getPassword_confirmation"
+        />
 
         <p class="p-XS">
           En cliquant sur "Inscription", tu acceptes les conditions générales
@@ -30,7 +38,8 @@
         </p>
         <RedButton text="Inscription" @click="registration" />
         <p class="p-XS">
-          Déjà inscrit(e) sur AmpliFire ? <a href="">Connexion</a>
+          Déjà inscrit(e) sur AmpliFire ?
+          <a href="/login">Connexion</a>
         </p>
         <p class="p-XS">
           Ce site est protégé par reCAPTCHA. Les règles de confidentialité et
@@ -52,15 +61,25 @@ export default {
     Field,
     RedButton,
   },
+  data() {
+    return {
+      nickname: "",
+      firstname: "",
+      lastname: "",
+      email: "",
+      password: "",
+      password_confirmation: "",
+    };
+  },
   methods: {
     async registration() {
       const body = {
-        nickname: "pseudo-test",
-        firstname: "John",
-        lastname: "Doe",
-        email: "john@gmail.com",
-        password: "Azerty123!",
-        password_confirmation: "Azerty123!",
+        nickname: this.nickname,
+        firstname: this.firstname,
+        lastname: this.lastname,
+        email: this.email,
+        password: this.password,
+        password_confirmation: this.password_confirmation,
       };
       const options = {
         method: "post",
@@ -72,7 +91,34 @@ export default {
       };
       const url = config.url;
       const data = await fetch(url + "/register", options);
-      console.log(data);
+      if (data.status === 201) {
+        (this.nickname = ""),
+          (this.firstname = ""),
+          (this.lastname = ""),
+          (this.email = ""),
+          (this.password = ""),
+          (this.password_confirmation = ""),
+          // afficher une modale pour dire que l'inscription est effectuée puis un bouton pour se connecter
+          this.$router.push("/login");
+      }
+    },
+    getNickname(value) {
+      this.nickname = value;
+    },
+    getLastname(value) {
+      this.lastname = value;
+    },
+    getFirstname(value) {
+      this.firstname = value;
+    },
+    getEmail(value) {
+      this.email = value;
+    },
+    getPassword(value) {
+      this.password = value;
+    },
+    getPassword_confirmation(value) {
+      this.password_confirmation = value;
     },
   },
 };

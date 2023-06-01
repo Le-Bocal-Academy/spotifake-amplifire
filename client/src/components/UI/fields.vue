@@ -1,7 +1,7 @@
 <template>
   <div class="col fields">
     <label for="" class="p-S">{{ label }}</label>
-    <input :type="fieldType" />
+    <input :type="fieldType" :value="value" @input="updateValue($event)" />
   </div>
 </template>
 
@@ -10,6 +10,13 @@ export default {
   props: {
     label: String,
     fieldType: String,
+    value: [String, Number],
+  },
+  methods: {
+    updateValue(event) {
+      const value = event.target.value;
+      this.$emit("getValue", value);
+    },
   },
 };
 </script>
@@ -22,5 +29,6 @@ export default {
   border-radius: 5px;
   outline: none;
   border: none;
+  color: black;
 }
 </style>
