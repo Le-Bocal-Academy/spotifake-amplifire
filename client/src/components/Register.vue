@@ -28,7 +28,7 @@
           En cliquant sur "Inscription", tu acceptes les conditions générales
           d'utilisation et la politique de protection des données
         </p>
-        <RedButton text="Inscription" />
+        <RedButton text="Inscription" @click="registration" />
         <p class="p-XS">
           Déjà inscrit(e) sur AmpliFire ? <a href="">Connexion</a>
         </p>
@@ -43,13 +43,37 @@
 </template>
 
 <script>
-import Field from "../components/UI/fields.vue";
-import RedButton from "../components/UI/redButton.vue";
+import Field from "./UI/fields.vue";
+import RedButton from "./UI/redButton.vue";
+import config from "../config.js";
 
 export default {
   components: {
     Field,
     RedButton,
+  },
+  methods: {
+    async registration() {
+      const body = {
+        nickname: "pseudo-test",
+        firstname: "John",
+        lastname: "Doe",
+        email: "john@gmail.com",
+        password: "Azerty123!",
+        password_confirmation: "Azerty123!",
+      };
+      const options = {
+        method: "post",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      };
+      const url = config.url;
+      const data = await fetch(url + "/register", options);
+      console.log(data);
+    },
   },
 };
 </script>
