@@ -13,8 +13,8 @@ RUN npm install
 # Copie tous les fichiers du projet dans le conteneur
 COPY . .
 
-# Construit l'application pour la production
-RUN npm run build
+# Construit l'application pour la production // n'est pas utile en developpement
+# RUN npm run build
 
 # Expose le port utilisé par l'application (facultatif)
 EXPOSE 8080

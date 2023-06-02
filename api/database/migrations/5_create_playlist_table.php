@@ -9,21 +9,16 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
-        Schema::disableForeignKeyConstraints();
-
         Schema::create('playlists', function (Blueprint $table) {
-            $table->increments('id');
-            $table->unsignedInteger('account_id');
-            $table->foreign('account_id')->references('id')->on('artists');
+            $table->id();
             $table->string('name');
-            $table->dateTime('created_at');
-            $table->dateTime('updated_at');
+            $table->foreignId('account_id')->constrained('artists')->onDelete('cascade');
+            $table->timestamps();
         });
-
-        Schema::enableForeignKeyConstraints();
     }
+
 
     /**
      * Reverse the migrations.

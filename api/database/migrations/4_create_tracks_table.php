@@ -8,20 +8,20 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::create('albums', function (Blueprint $table) {
+        Schema::create('tracks', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('title');
-            $table->unsignedBigInteger('artist_id');
-            $table->integer('year');
-            $table->text('description');
+            $table->time('duration');
+            $table->string('file');
+            $table->unsignedBigInteger('album_id');
             $table->timestamps();
 
-            $table->foreign('artist_id')->references('id')->on('artists')->onDelete('cascade');
+            $table->foreign('album_id')->references('id')->on('albums')->onDelete('cascade');
         });
     }
 
     public function down()
     {
-        Schema::dropIfExists('albums');
+        Schema::dropIfExists('tracks');
     }
 };

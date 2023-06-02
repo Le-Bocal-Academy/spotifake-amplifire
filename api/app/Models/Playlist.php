@@ -18,7 +18,7 @@ class Playlist extends Model
      */
 
     protected $fillable = [
-        'account_id',
         'name',
+        'account_id',
     ];
 }
