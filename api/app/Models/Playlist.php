@@ -21,4 +21,9 @@ class Playlist extends Model
         'name',
         'account_id',
     ];
+
+    public function tracks()
+    {
+        return $this->belongsToMany(Track::class, 'playlist_track', 'playlist_id', 'track_id');
+    }
 }

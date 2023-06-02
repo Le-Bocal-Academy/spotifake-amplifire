@@ -18,11 +18,11 @@ class Album extends Model
 
   public function tracks()
   {
-    return $this->hasMany(Track::class);
+    return $this->hasMany(Track::class, 'album_track', 'album_id', 'track_id');
   }
 
   public function styles()
   {
-    return $this->belongsToMany(Style::class);
+    return $this->belongsToMany(Style::class, 'album_style', 'album_id', 'style_id');
   }
 }

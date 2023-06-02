@@ -40,13 +40,13 @@ class importDataToDb extends Command
             }
 
             foreach ($albumData['tracks'] as $trackData) {
-                $track = Track::create([
+                Track::create([
                     'title' => $trackData['title'],
                     'duration' => $trackData['duration'],
                     'file' => $trackData['file'],
                     'album_id' => $album->id,
                 ]);
-                $album->tracks()->attach($track);
+                // $album->tracks()->attach($track);
             }
         }
     }
