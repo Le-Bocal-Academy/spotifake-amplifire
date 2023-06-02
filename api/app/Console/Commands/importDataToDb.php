@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Album;
+use App\Models\Artist;
 use App\Models\Style;
 use App\Models\Track;
 use Illuminate\Console\Command;
@@ -16,19 +17,25 @@ class importDataToDb extends Command
 
     public function handle()
     {
-        $datasJson = file_get_contents(storage_path('data.json'));
+        $datasJson = file_get_contents(storage_path('app/public/data.json'));
         $datas = json_decode($datasJson, true);
 
+
+
         foreach ($datas['albums'] as $albumData) {
+            $artist = Artist::firstOrCreate(['name' => $albumData['artist']]);
+            Log::info($artist);
             $album = Album::create([
                 'title' => $albumData['title'],
                 'artist' => $albumData['artist'],
                 'year' => $albumData['year'],
                 'description' => $albumData['description'],
+                'artist_id' => $artist->id,
             ]);
 
+
             foreach ($albumData['styles'] as $styleName) {
-                $style = Style::firstOrCreate(['name' => $styleName]);
+                $style = Style::create(['style' => $styleName, 'album_id' => $album->id,]);
                 $album->styles()->attach($style);
             }
 

@@ -11,12 +11,13 @@ return new class extends Migration
         Schema::create('albums', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('title');
-            $table->unsignedBigInteger('artist_id');
             $table->integer('year');
             $table->text('description');
-            $table->timestamps();
 
+            $table->unsignedBigInteger('artist_id');
             $table->foreign('artist_id')->references('id')->on('artists')->onDelete('cascade');
+
+            $table->timestamps();
         });
     }
 

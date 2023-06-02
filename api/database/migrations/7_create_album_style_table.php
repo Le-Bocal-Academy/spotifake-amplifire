@@ -9,20 +9,19 @@ return new class extends Migration
 
   public function up()
   {
-    Schema::create('styles', function (Blueprint $table) {
+    Schema::create('album_style', function (Blueprint $table) {
       $table->bigIncrements('id');
-      $table->string('style');
 
       $table->unsignedBigInteger('album_id');
       $table->foreign('album_id')->references('id')->on('albums')->onDelete('cascade');
-
-      $table->timestamps();
+      $table->unsignedBigInteger('style_id');
+      $table->foreign('style_id')->references('id')->on('styles')->onDelete('cascade');
     });
   }
 
 
   public function down()
   {
-    Schema::dropIfExists('styles');
+    Schema::dropIfExists('album_style');
   }
 };

@@ -1,7 +1,6 @@
 version: "3.8"
 
 services:
-
   mysql_DB:
     container_name: mysql_DB
     image: mysql:latest
@@ -60,7 +59,7 @@ services:
       - ./api:/var/www/app
     ports:
       - 8000:80
-    command: sh -c "php artisan migrate && php artisan data:import && apachectl -D FOREGROUND"
+    command: sh -c "php artisan migrate && apachectl -D FOREGROUND"
     env_file:
       - .env
     networks:
@@ -70,7 +69,6 @@ services:
 
 volumes:
   db_data:
-
 
 networks:
   app-network:

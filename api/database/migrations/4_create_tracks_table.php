@@ -13,10 +13,11 @@ return new class extends Migration
             $table->string('title');
             $table->time('duration');
             $table->string('file');
-            $table->unsignedBigInteger('album_id');
-            $table->timestamps();
 
+            $table->unsignedBigInteger('album_id');
             $table->foreign('album_id')->references('id')->on('albums')->onDelete('cascade');
+
+            $table->timestamps();
         });
     }
 
