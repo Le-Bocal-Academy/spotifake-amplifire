@@ -60,7 +60,8 @@ class AuthController extends Controller
 
             return response(['errors' => $exception->errors()], 422);
         } catch (\Exception $exception) {
-            Log::error($exception); // l'erreur s'affiche dans /storage/logs/laravel.log
+
+            Log::error($exception);
             return response(['erreur' => 'Une erreur s\'est produite'], 500);
         }
     }
@@ -69,6 +70,7 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         try {
+
             $validatedData = $request->validate([
                 'email' => 'email|required',
                 'password' => 'required'
@@ -86,34 +88,33 @@ class AuthController extends Controller
 
             // retourne l'access token au front qui doit le stocker en "localstorage" 
             // puis utiliser ce token dans le header "Authorization" de toutes les autre requêtes
-            return response(['user' => $account]);
-        } catch (\Exception $exception) {
-            Log::error($exception); // l'erreur s'affiche dans /storage/logs/laravel.log      
+            return response(['data' => $account, 'message' => 'Utilisateur connecté'], 200);
+        } catch (ValidationException $exception) {
+
+            return response(['errors' => $exception->errors()], 422);
+        } catch (Exception $exception) {
+
+            Log::error($exception);
             return response(['erreur' => 'Une erreur s\'est produite'], 500);
         }
     }
-
 
     public function logout(Request $request)
     {
         try {
-            // Recherche du user actuellement authentifié
             $user = $request->user();
 
-            // Récupération du token actuellement utilisé par l'utilisateur
             $currentToken = $user->currentAccessToken();
 
-            // Suppression du token
             $user->tokens()->where('id', $currentToken->id)->delete();
 
             return response(['message' => 'Utilisateur déconnecté'], 200);
-        } catch (\Exception $exception) {
-            Log::error($exception); // l'erreur s'affiche dans /storage/logs/laravel.log
+        } catch (Exception $exception) {
+            Log::error($exception);
             return response(['erreur' => 'Une erreur s\'est produite'], 500);
         }
     }
 
-    // TODO améliorer les deux fonctions suivantes avec des try catch, logs et messages renvoyés au front
     public function forgotPassword(Request $request)
     {
         try {
@@ -126,8 +127,11 @@ class AuthController extends Controller
             return $status === Password::RESET_LINK_SENT
                 ? response()->json(['status' => __($status)], 200)
                 : response()->json(['email' => [__($status)]], 400);
+        } catch (ValidationException $exception) {
+
+            return response(['errors' => $exception->errors()], 422);
         } catch (Exception $e) {
-            Log::error($e); // l'erreur s'affiche dans /storage/logs/laravel.log
+            Log::error($e);
             return response()->json(['erreur' => 'Une erreur s\'est produite'], 500);
         }
     }
@@ -137,7 +141,7 @@ class AuthController extends Controller
     {
         try {
             $request->validate([
-                'token' => 'required',
+                'token' => 'required|string',
                 'email' => 'required|email',
                 'password' => [
                     'required',
@@ -164,10 +168,13 @@ class AuthController extends Controller
             );
 
             return $status === Password::PASSWORD_RESET
-                ? response()->json(['status' => __($status)], 200)
-                : response()->json(['email' => [__($status)]], 400);
+                ? response()->json(['message' => 'Un email à été envoyé à l\'adresse ' . $request->email], 200)
+                : response()->json(['erreur' => [__($status)]], 400);
+        } catch (ValidationException $exception) {
+
+            return response(['errors' => $exception->errors()], 422);
         } catch (Exception $e) {
-            Log::error($e); // l'erreur s'affiche dans /storage/logs/laravel.log
+            Log::error($e);
             return response()->json(['erreur' => 'Une erreur s\'est produite'], 500);
         }
     }

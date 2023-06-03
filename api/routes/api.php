@@ -26,7 +26,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/disk', [DiskController::class, 'index']);
 
     Route::get('/playlist', [PlaylistController::class, 'getAllPlaylist']);
-    Route::post('/playlist', [PlaylistController::class, 'createPlaylist']);
+    Route::post('/playlist/create', [PlaylistController::class, 'createPlaylist']);
     Route::post('/playlist/addTrack', [PlaylistController::class, 'addTrack']);
     Route::post('/playlist/deleteTrack', [PlaylistController::class, 'deleteTrack']);
+    Route::post('/playlist/deletePlaylist', [PlaylistController::class, 'deletePlaylist']);
+    Route::put('/playlist/renamePlaylist', [PlaylistController::class, 'renamePlaylist']);
 });
