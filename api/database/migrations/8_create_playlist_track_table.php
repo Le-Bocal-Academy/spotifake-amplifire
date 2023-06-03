@@ -16,7 +16,9 @@ return new class extends Migration
       $table->foreign('playlist_id')->references('id')->on('playlists')->onDelete('cascade');
 
       $table->unsignedBigInteger('track_id');
-      $table->foreign('track_id')->references('id')->on('styles')->onDelete('cascade');
+      $table->foreign('track_id')->references('id')->on('tracks')->onDelete('cascade');
+
+      $table->timestamps();
     });
   }
 

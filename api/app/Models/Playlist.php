@@ -11,15 +11,14 @@ class Playlist extends Model
 {
     use HasFactory, Notifiable, HasApiTokens;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
-
     protected $fillable = [
         'name',
         'account_id',
+    ];
+
+    protected $hidden = [
+        'updated_at',
+        'created_at',
     ];
 
     public function tracks()

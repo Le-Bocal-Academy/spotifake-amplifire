@@ -11,6 +11,11 @@ class Track extends Model
 
   protected $fillable = ['title', 'duration', 'file', 'album_id'];
 
+  protected $hidden = [
+    'updated_at',
+    'created_at',
+  ];
+
   public function album()
   {
     return $this->belongsTo(Album::class);

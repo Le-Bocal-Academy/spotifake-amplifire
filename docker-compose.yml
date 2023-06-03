@@ -59,7 +59,8 @@ services:
       - ./api:/var/www/app
     ports:
       - 8000:80
-    command: sh -c "php artisan migrate && apachectl -D FOREGROUND"
+    # command: sh -c "php artisan migrate && php artisan data:import && apachectl -D FOREGROUND"
+    command: /bin/bash -c "sleep 10 && php artisan migrate && php artisan data:import && apachectl -D FOREGROUND"
     env_file:
       - .env
     networks:
