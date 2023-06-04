@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\DiskController;
+use App\Http\Controllers\TrackController;
 use App\Http\Controllers\PlaylistController;
 use Illuminate\Support\Facades\Route;
 
@@ -21,9 +21,10 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/forgotPassword', [AuthController::class, 'forgotPassword']);
 Route::post('/resetPassword', [AuthController::class, 'resetPassword']);
 
+
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/logout', [AuthController::class, 'logout']);
-    Route::get('/disk', [DiskController::class, 'index']);
 
     Route::get('/playlist', [PlaylistController::class, 'getAllPlaylist']);
     Route::post('/playlist/create', [PlaylistController::class, 'createPlaylist']);
@@ -31,4 +32,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/playlist/deleteTrack', [PlaylistController::class, 'deleteTrack']);
     Route::post('/playlist/deletePlaylist', [PlaylistController::class, 'deletePlaylist']);
     Route::put('/playlist/renamePlaylist', [PlaylistController::class, 'renamePlaylist']);
+
+    Route::get('/track/{id}', [TrackController::class, 'show'])->name('track.show');
 });
