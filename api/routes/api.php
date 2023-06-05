@@ -4,6 +4,7 @@ use App\Http\Controllers\AlbumController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TrackController;
 use App\Http\Controllers\PlaylistController;
+use App\Http\Controllers\SearchController;
 use App\Models\Album;
 use Illuminate\Support\Facades\Route;
 
@@ -23,9 +24,6 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/forgotPassword', [AuthController::class, 'forgotPassword']);
 Route::post('/resetPassword', [AuthController::class, 'resetPassword']);
 
-
-
-
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/logout', [AuthController::class, 'logout']);
 
@@ -39,4 +37,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/track/{id}', [TrackController::class, 'play'])->name('track.play');
 
     Route::get('/album/{id}', [AlbumController::class, 'getAlbum']);
+
+    Route::get('/search', [SearchController::class, 'search']);
 });

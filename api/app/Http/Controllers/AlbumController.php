@@ -7,7 +7,6 @@ use App\Models\Artist;
 use App\Models\Track;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\Request;
 
 class AlbumController extends Controller
 {
