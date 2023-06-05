@@ -7,7 +7,6 @@ use App\Models\Artist;
 use App\Models\Style;
 use App\Models\Track;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Log;
 
 class importDataToDb extends Command
 {
@@ -20,19 +19,15 @@ class importDataToDb extends Command
         $datasJson = file_get_contents(storage_path('app/public/data.json'));
         $datas = json_decode($datasJson, true);
 
-
-
         foreach ($datas['albums'] as $albumData) {
             $artist = Artist::firstOrCreate(['name' => $albumData['artist']]);
-            Log::info($artist);
-            $album = Album::create([
+            $album = Album::firstOrCreate([
                 'title' => $albumData['title'],
-                'artist' => $albumData['artist'],
+                // 'artist' => $albumData['artist'],
                 'year' => $albumData['year'],
                 'description' => $albumData['description'],
                 'artist_id' => $artist->id,
             ]);
-
 
             foreach ($albumData['styles'] as $styleName) {
                 $style = Style::firstOrCreate(
@@ -47,7 +42,7 @@ class importDataToDb extends Command
             }
 
             foreach ($albumData['tracks'] as $trackData) {
-                Track::create([
+                Track::firstOrCreate([
                     'title' => $trackData['title'],
                     'duration' => $trackData['duration'],
                     'file' => $trackData['file'],

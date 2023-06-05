@@ -45,7 +45,7 @@ class AuthController extends Controller
                 'email.email' => 'L\'email n\'est pas valide',
                 'email.unique' => 'L\'email n\'est pas valide',
                 'password.required' => 'Le mot de passe est requis',
-                'password.confirmed' => 'Les mot de passe ne correspondent pas',
+                'password.confirmed' => 'Les mots de passe ne correspondent pas',
                 'password.min' => 'Le mot de passe doit contenir au moins 8 caractères',
                 'password.regex' => 'Le mot de passe doit contenir au moins une lettre minuscule, une lettre majuscule, un chiffre et un caractère spécial',
             ]);
