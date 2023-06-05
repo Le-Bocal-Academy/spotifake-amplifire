@@ -4,18 +4,22 @@ namespace App\Http\Controllers;
 
 use App\Models\Album;
 use App\Models\Artist;
+use App\Models\Style;
 use App\Models\Track;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class AlbumController extends Controller
 {
-    public function getAlbum($id)
+    public function getAlbumById($id)
     {
         try {
             $album = Album::findOrFail($id);
             $album->artist = Artist::findOrFail($album->artist_id);
             $album->tracks = Track::where('album_id', $album->id)->get();
+            $album->styles = Style::whereHas('albums', function ($query) use ($album) {
+                $query->where('album_id', $album->id);
+            })->get();
 
             unset($album->artist_id);
 

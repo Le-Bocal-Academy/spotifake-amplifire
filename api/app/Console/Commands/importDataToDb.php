@@ -28,18 +28,14 @@ class importDataToDb extends Command
                 'description' => $albumData['description'],
                 'artist_id' => $artist->id,
             ]);
-
-            foreach ($albumData['styles'] as $styleName) {
-                $style = Style::firstOrCreate(
-                    ['style' => $styleName], // Les critères pour trouver l'entrée existante.
-                    ['album_id' => $album->id] // Les valeurs à utiliser pour créer une nouvelle entrée si aucune entrée existante n'est trouvée.
-                );
-
-                // Ensuite, vous pouvez vérifier si le style est déjà attaché à l'album avant de l'attacher.
-                if (!$album->styles->contains($style->id)) {
-                    $album->styles()->attach($style);
-                }
+            // Style::firstOrCreate($albumData['styles']);
+            $styles = [];
+            foreach ($albumData['styles'] as $style) {
+                $styleModel = Style::firstOrCreate(['style' => $style]);
+                $styles[] = $styleModel->id;
             }
+
+            $album->styles()->attach($styles);
 
             foreach ($albumData['tracks'] as $trackData) {
                 Track::firstOrCreate([

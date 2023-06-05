@@ -9,10 +9,10 @@ class Style extends Model
 {
   use HasFactory;
 
-  protected $fillable = ['style', 'album_id'];
+  protected $fillable = ['style'];
 
   public function albums()
   {
-    return $this->belongsToMany(Album::class);
+    return $this->belongsToMany(Album::class, 'album_style', 'style_id', 'album_id');
   }
 }

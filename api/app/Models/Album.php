@@ -18,7 +18,7 @@ class Album extends Model
 
   public function tracks()
   {
-    return $this->hasMany(Track::class, 'album_track', 'album_id', 'track_id');
+    return $this->hasMany(Track::class, 'album_id');
   }
 
   public function styles()

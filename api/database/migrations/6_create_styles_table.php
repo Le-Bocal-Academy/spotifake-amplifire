@@ -13,9 +13,6 @@ return new class extends Migration
       $table->bigIncrements('id');
       $table->string('style');
 
-      $table->unsignedBigInteger('album_id');
-      $table->foreign('album_id')->references('id')->on('albums')->onDelete('cascade');
-
       $table->timestamps();
     });
   }
