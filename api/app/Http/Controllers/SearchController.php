@@ -4,10 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Album;
 use App\Models\Artist;
-use App\Models\Style;
 use App\Models\Track;
 use Exception;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 
 class SearchController extends Controller
