@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Storage;
 
 class TrackController extends Controller
 {
-    public function show($id)
+    public function play($id)
     {
         try {
             $track = Track::findOrFail($id);
