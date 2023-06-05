@@ -125,7 +125,7 @@ class AuthController extends Controller
             );
 
             return $status === Password::RESET_LINK_SENT
-                ? response()->json(['status' => __($status)], 200)
+                ? response()->json(['status' => 'Un email a été envoyé'], 200)
                 : response()->json(['email' => [__($status)]], 400);
         } catch (ValidationException $exception) {
 

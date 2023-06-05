@@ -7,6 +7,7 @@ use App\Models\Artist;
 use App\Models\Track;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class SearchController extends Controller
 {
@@ -28,12 +29,14 @@ class SearchController extends Controller
             $isEmpty = collect($data)->flatten()->isEmpty();
 
             if ($isEmpty) {
-                return response()->json(['message' => 'No match found'], 404);
+                return response()->json(['erreur' => 'Aucune correspondance touvée'], 404);
             }
 
             return response(['data' => $data], 200);
         } catch (Exception $e) {
-            return response()->json(['message' => 'An error occurred'], 500);
+
+            Log::error($e);
+            return response(['erreur' => 'Une erreur s\'est produite'], 500);
         }
     }
 }

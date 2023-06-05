@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Track;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class TrackController extends Controller
@@ -19,9 +20,11 @@ class TrackController extends Controller
                 return response(Storage::disk('s3')->get($fileName), 200)->header('Content-Type', 'audio/mpeg');
             }
         } catch (ModelNotFoundException $e) {
-            return response()->json(['message' => 'Track not found'], 404);
+            return response()->json(['erreur' => 'La chanson n\'existe pas'], 404);
         } catch (Exception $e) {
-            return response()->json(['message' => 'An error occurred'], 500);
+
+            Log::error($e);
+            return response(['erreur' => 'Une erreur s\'est produite'], 500);
         }
     }
 }

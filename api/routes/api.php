@@ -35,6 +35,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/track/{id}', [TrackController::class, 'play'])->name('track.play');
 
+    Route::get('/album', [AlbumController::class, 'getAlbums']);
     Route::get('/album/{id}', [AlbumController::class, 'getAlbumById']);
 
     Route::get('/search', [SearchController::class, 'search']);
