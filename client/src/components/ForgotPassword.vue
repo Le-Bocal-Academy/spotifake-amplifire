@@ -3,7 +3,7 @@
     <article class="bgBlack">
       <div class="col forms">
         <Field label="adresse email" fieldType="text" @getValue="getEmail" />
-        <RedButton text="Send new password" @click="sendNewPassword" />
+        <RedButton text="Envoyer un email" @click="sendNewPassword" />
       </div>
     </article>
   </section>

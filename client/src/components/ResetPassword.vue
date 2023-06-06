@@ -2,24 +2,19 @@
   <section>
     <article class="bgBlack">
       <div class="col forms">
-        <Field label="adresse email" fieldType="text" @getValue="getEmail" />
+        <Field label="token" fieldType="text" @getValue="getToken" />
+        <Field label="email" fieldType="text" @getValue="getEmail" />
         <Field
-          label="mot de passe"
-          fieldType="password"
-          @getValue="getPassword"
+          label="nouveau mot de passe"
+          fieldType="text"
+          @getValue="getNewPassword"
         />
-        <p class="p-XS">
-          <a href="/forgotpassword">mot de passe oublié ?</a>
-        </p>
-        <RedButton text="Connexion" @click="login" />
-        <p class="p-XS">
-          Tu n'as pas de compte ?
-          <a href="/register">S'inscrire</a>
-        </p>
-        <p class="p-XS">
-          Ce site est protégé par reCAPTCHA. Les règles de confidentialité et
-          condition d'utilisation de Google s'appliquent.
-        </p>
+        <Field
+          label="confirmation du mot de passe"
+          fieldType="text"
+          @getValue="getConfirmationNewPasword"
+        />
+        <RedButton text="Changer mon mot de passe" @click="sendNewPassword" />
       </div>
     </article>
   </section>
@@ -38,14 +33,18 @@ export default {
   data() {
     return {
       email: "",
-      password: "",
+      token: "",
+      newPassword: "",
+      confirmationNewPasword: "",
     };
   },
   methods: {
-    async login() {
+    async resetPassword() {
       const body = {
+        token: this.token,
         email: this.email,
-        password: this.password,
+        password: this.newPassword,
+        password_confirmation: this.confirmationNewPasword,
       };
       const options = {
         method: "post",
@@ -56,29 +55,21 @@ export default {
         body: JSON.stringify(body),
       };
       const url = config.url;
-      const data = await fetch(url + "/login", options);
+      const data = await fetch(url + "/resetPassword", options);
       const response = await data.json();
-      const token = response.token;
-      if (data.status === 200 && token) {
-        localStorage.setItem("token", token);
-        const options = {
-          method: "get",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + token,
-          },
-        };
-        const data = await fetch(url + "/disk", options);
-        console.log(data);
-        this.$router.push("/home");
-      }
+      console.log(response);
     },
     getEmail(value) {
       this.email = value;
     },
-    getPassword(value) {
-      this.password = value;
+    getToken(value) {
+      this.token = value;
+    },
+    getNewPassword(value) {
+      this.newPassword = value;
+    },
+    getConfirmationNewPasword(value) {
+      this.confirmationNewPasword = value;
     },
   },
 };
@@ -88,7 +79,7 @@ export default {
 section {
   display: flex;
   justify-content: center;
-  margin-bottom: 10%;
+  margin-bottom: 30%;
   margin-top: 5%;
 }
 article {

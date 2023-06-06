@@ -2,6 +2,7 @@
   <div>
     <Header />
     <ForgotPassword />
+    <ResetPassword />
     <Footer />
   </div>
 </template>
@@ -11,6 +12,7 @@
 import Header from "@/components/Header.vue";
 import Footer from "@/components/Footer.vue";
 import ForgotPassword from "@/components/ForgotPassword.vue";
+import ResetPassword from "../components/ResetPassword.vue";
 
 export default {
   name: "ForgotPasswordView",
@@ -18,6 +20,7 @@ export default {
     Header,
     ForgotPassword,
     Footer,
+    ResetPassword,
   },
 };
 </script>

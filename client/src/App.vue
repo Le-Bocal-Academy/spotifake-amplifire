@@ -32,6 +32,9 @@ body {
 .bgRed {
   background: #ff2a2a;
 }
+.bgWhite {
+  background: white;
+}
 .white {
   color: white;
 }

@@ -2,6 +2,7 @@
   <span>
     <button class="bgRed white p-S">
       <a class="white" :href="link">{{ text }}</a>
+      <slot></slot>
     </button>
   </span>
 </template>
