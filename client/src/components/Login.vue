@@ -57,22 +57,24 @@ export default {
       };
       const url = config.url;
       const data = await fetch(url + "/login", options);
-      const response = await data.json();
-      const token = response.token;
-      if (data.status === 200 && token) {
-        localStorage.setItem("token", token);
-        const options = {
-          method: "get",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + token,
-          },
-        };
-        const data = await fetch(url + "/disk", options);
-        console.log(data);
-        this.$router.push("/home");
-      }
+      // console.log(data);
+      // const response = await data.json();
+      // console.log(response);
+      // const token = response.token;
+      // if (data.status === 200 && token) {
+      //   localStorage.setItem("token", token);
+      //   const options = {
+      //     method: "get",
+      //     headers: {
+      //       Accept: "application/json",
+      //       "Content-Type": "application/json",
+      //       Authorization: "Bearer " + token,
+      //     },
+      //   };
+      //   const data = await fetch(url + "/disk", options);
+      //   console.log(data);
+      this.$router.push("/home");
+      // }
     },
     getEmail(value) {
       this.email = value;

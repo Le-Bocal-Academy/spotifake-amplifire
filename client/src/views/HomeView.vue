@@ -28,13 +28,37 @@
                 :placeholder="''"
                 v-html="this.placeholderContent"
               />
-              <button class="bgRed white p-M addButton">
+              <button
+                class="bgRed white p-M addButton"
+                @click="showPopupAddPlaylist = true"
+              >
                 <i class="fa-solid fa-plus"></i>
               </button>
             </div>
           </div>
           <hr />
         </div>
+
+        <!-- Modal add playlist -->
+        <Modal v-if="showPopupAddPlaylist" title="Ajouter une playlist">
+          <template v-slot:content>
+            <Fields
+              label="nom de la playlist"
+              fieldType="text"
+              @getValue="getPlaylistName"
+            />
+            <span>
+              <BlueButton
+                text="Annuler"
+                @click="
+                  showPopupAddPlaylist = false;
+                  this.newPlaylistName = null;
+                "
+              />
+              <RedButton text="Ajouter" @click="this.createPlaylist" />
+            </span>
+          </template>
+        </Modal>
 
         <div class="iconsContainer">
           <div class="playlistIcons">
@@ -69,6 +93,10 @@ import Header from "@/components/Header.vue";
 import Footer from "@/components/Footer.vue";
 import RedButton from "@/components/UI/redButton.vue";
 import playlists from "@/_lib/requests/playlists.js";
+import Modal from "../components/UI/modal.vue";
+import Fields from "../components/UI/fields.vue";
+import YellowButton from "../components/UI/yellowButton.vue";
+import BlueButton from "../components/UI/blueButton.vue";
 
 export default {
   name: "HomeView",
@@ -76,6 +104,10 @@ export default {
     Header,
     Footer,
     RedButton,
+    Modal,
+    Fields,
+    YellowButton,
+    BlueButton,
   },
   data() {
     return {
@@ -88,6 +120,7 @@ export default {
       playlistRename: null,
       playlistId: null,
       trackId: null,
+      showPopupAddPlaylist: false,
     };
   },
   mounted() {
@@ -100,6 +133,7 @@ export default {
       this.playlist = response;
     },
     async createPlaylist() {
+      console.log(this.newPlaylistName);
       const body = {
         name: this.newPlaylistName,
       };
@@ -136,6 +170,9 @@ export default {
       };
       const response = await playlists.renamePlaylist(body);
       console.log(response);
+    },
+    getPlaylistName(value) {
+      this.newPlaylistName = value;
     },
   },
 };
