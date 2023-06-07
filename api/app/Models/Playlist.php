@@ -11,14 +11,18 @@ class Playlist extends Model
 {
     use HasFactory, Notifiable, HasApiTokens;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
-
     protected $fillable = [
-        'account_id',
         'name',
+        'account_id',
     ];
+
+    protected $hidden = [
+        'updated_at',
+        'created_at',
+    ];
+
+    public function tracks()
+    {
+        return $this->belongsToMany(Track::class, 'playlist_track', 'playlist_id', 'track_id');
+    }
 }
