@@ -53,7 +53,7 @@ class PlaylistController extends Controller
         }
       }
 
-      return response(['data' => $playlist], 200);
+      return response(['data' => $playlists], 200);
     } catch (Exception $e) {
 
       Log::error($e);
