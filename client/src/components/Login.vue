@@ -57,12 +57,10 @@ export default {
       };
       const url = config.url;
       const data = await fetch(url + "/login", options);
-      // console.log(data);
-      // const response = await data.json();
-      // console.log(response);
-      // const token = response.token;
+      const response = await data.json();
+      const token = response.data.token;
       // if (data.status === 200 && token) {
-      //   localStorage.setItem("token", token);
+      localStorage.setItem("token", token);
       //   const options = {
       //     method: "get",
       //     headers: {
