@@ -198,7 +198,7 @@ class AuthController extends Controller
 
             Log::error($exception);
             return response(['erreur' => 'Une erreur s\'est produite'], 500);
-        }0
+        }
     }
 
     public function resendEmail(Request $request)
