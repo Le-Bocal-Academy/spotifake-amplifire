@@ -37,8 +37,8 @@ export default {
   },
   data() {
     return {
-      email: "",
-      password: "",
+      email: "ambre.rizzo@gmail.com",
+      password: "Azerty#12345",
     };
   },
   methods: {
@@ -58,9 +58,20 @@ export default {
       const url = config.url;
       const data = await fetch(url + "/login", options);
       const response = await data.json();
+      console.log(response);
       const token = response.data.token;
+      const firstname = response.data.firstname;
+      const lastname = response.data.lastname;
+      const userId = response.data.id;
+      const nickname = response.data.nickname;
+      const email = response.data.email;
       // if (data.status === 200 && token) {
       localStorage.setItem("token", token);
+      localStorage.setItem("firstname", firstname);
+      localStorage.setItem("lastname", lastname);
+      localStorage.setItem("userId", userId);
+      localStorage.setItem("nickname", nickname);
+      localStorage.setItem("email", email);
       //   const options = {
       //     method: "get",
       //     headers: {

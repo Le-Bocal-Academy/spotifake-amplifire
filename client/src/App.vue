@@ -98,4 +98,8 @@ button {
   border: none;
   border-radius: 5px;
 }
+
+.capitalize {
+  text-transform: capitalize;
+}
 </style>

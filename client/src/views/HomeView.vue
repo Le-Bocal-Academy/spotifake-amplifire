@@ -4,7 +4,7 @@
     <div class="bgWhite homeContainer">
       <div class="userInfos">
         <div class="user">
-          <h1 class="yellow">Ambre</h1>
+          <h1 class="yellow capitalize">{{ this.nickname }}</h1>
           <p class="p-S">12 folowers . 8 following</p>
         </div>
         <RedButton link="#" @click="play">
@@ -60,18 +60,11 @@
           </template>
         </Modal>
 
-        <div class="iconsContainer">
-          <div
-            class="playlistIcons"
-            v-for="playlist in this.playlists"
-            :key="playlist.id"
-          >
-            <div class="playlistIcon">
-              <i class="fa-solid fa-play p-M"></i>
-            </div>
-            <p>{{ playlist.name }}</p>
-          </div>
-        </div>
+        <Playlists
+          :playlists="this.playlists"
+          @clickedPlaylist="getPlaylistId"
+        />
+        <Playlist :playlist="this.clickedPlaylist" />
       </div>
     </div>
 
@@ -89,6 +82,8 @@ import Modal from "../components/UI/modal.vue";
 import Fields from "../components/UI/fields.vue";
 import YellowButton from "../components/UI/yellowButton.vue";
 import BlueButton from "../components/UI/blueButton.vue";
+import Playlists from "../components/AllPlaylists.vue";
+import Playlist from "../components/Playlist.vue";
 
 export default {
   name: "HomeView",
@@ -100,6 +95,8 @@ export default {
     Fields,
     YellowButton,
     BlueButton,
+    Playlists,
+    Playlist,
   },
   data() {
     return {
@@ -113,10 +110,17 @@ export default {
       playlistId: null,
       trackId: null,
       showPopupAddPlaylist: false,
+      firstname: "",
+      lastname: "",
+      userId: "",
+      nickname: "",
+      email: "",
+      clickedPlaylist: null,
     };
   },
   mounted() {
     this.getPlaylist();
+    this.getUserInfos();
   },
   methods: {
     async getPlaylist() {
@@ -166,6 +170,13 @@ export default {
     getPlaylistName(value) {
       this.newPlaylistName = value;
     },
+    getUserInfos() {
+      this.nickname = localStorage.getItem("nickname");
+    },
+    getPlaylistId(id) {
+      const playlist = this.playlists.find((playlist) => playlist.id == id);
+      this.clickedPlaylist = playlist;
+    },
   },
 };
 </script>
@@ -183,28 +194,6 @@ export default {
 }
 .playlistContainer {
   padding: 5% 0;
-}
-.playlistIcon {
-  width: 150px;
-  height: 150px;
-  padding: 5%;
-  border: 2px solid #26272b;
-  border-radius: 5px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.playlistIcons {
-  display: flex;
-  flex-direction: column;
-  width: fit-content;
-  gap: 20px;
-  align-items: flex-start;
-  padding: 20px;
-}
-.iconsContainer {
-  display: flex;
-  gap: 20px;
 }
 .addButton {
   padding: 1px;
