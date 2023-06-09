@@ -61,23 +61,15 @@
         </Modal>
 
         <div class="iconsContainer">
-          <div class="playlistIcons">
+          <div
+            class="playlistIcons"
+            v-for="playlist in this.playlists"
+            :key="playlist.id"
+          >
             <div class="playlistIcon">
               <i class="fa-solid fa-play p-M"></i>
             </div>
-            <p>Playlist 1</p>
-          </div>
-          <div class="playlistIcons">
-            <div class="playlistIcon">
-              <i class="fa-solid fa-play p-M"></i>
-            </div>
-            <p>Playlist 2</p>
-          </div>
-          <div class="playlistIcons">
-            <div class="playlistIcon">
-              <i class="fa-solid fa-play p-M"></i>
-            </div>
-            <p>Playlist 3</p>
+            <p>{{ playlist.name }}</p>
           </div>
         </div>
       </div>
@@ -115,7 +107,7 @@ export default {
       audioElement: null,
       placeholderContent:
         '<i class="fa-solid fa-magnifying-glass"></i> Rechercher',
-      playlist: null,
+      playlists: null,
       newPlaylistName: null,
       playlistRename: null,
       playlistId: null,
@@ -129,8 +121,8 @@ export default {
   methods: {
     async getPlaylist() {
       const response = await playlists.getAll();
-      console.log(response);
-      this.playlist = response;
+      console.log(response.data);
+      this.playlists = response.data;
     },
     async createPlaylist() {
       console.log(this.newPlaylistName);
