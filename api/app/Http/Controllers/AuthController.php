@@ -14,7 +14,10 @@ use Illuminate\Support\Str;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Mail\MailVerification;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\Mail;
+use PharIo\Manifest\Email;
 
 class AuthController extends Controller
 {
@@ -55,9 +58,9 @@ class AuthController extends Controller
 
             $validatedData['password'] = Hash::make($request->password);
 
-            // Account::create($validatedData);
+            $account = Account::create($validatedData);
 
-            Account::create($validatedData);
+            event(new Registered($account));
 
             return response(['message' => 'Compte créé, vous allez recevoir un mail pour activer votre compte.'], 201);
         } catch (ValidationException $exception) {
@@ -181,18 +184,44 @@ class AuthController extends Controller
         }
     }
 
-    public function verifyEmail($id)
+    public function verifyEmail(EmailVerificationRequest $request, $id, $hash)
     {
         try {
-            $account = Account::findOrFail($id);
-
-            $account->email_verified_at = now();
-            $account->save();
+            $request->fulfill();
 
             return response(['message' => 'Votre compte a été activé avec succès !'], 200);
+            redirect()->route('login');
         } catch (ModelNotFoundException $exception) {
 
             return response(['erreur' => 'Utilisateur non trouvé'], 404);
+        } catch (Exception $exception) {
+
+            Log::error($exception);
+            return response(['erreur' => 'Une erreur s\'est produite'], 500);
+        }0
+    }
+
+    public function resendEmail(Request $request)
+    {
+        try {
+            $request->validate(['email' => 'required|email']);
+
+            $account = Account::where('email', $request->email)->first();
+
+            if (!$account) {
+                return response(['erreur' => 'Utilisateur non trouvé'], 404);
+            }
+
+            if ($account->email_verified_at) {
+                return response(['erreur' => 'Votre compte est déjà activé'], 400);
+            }
+
+            $account->sendEmailVerificationNotification();
+
+            return response(['message' => 'Un email à été envoyé à l\'adresse ' . $request->email], 200);
+        } catch (ValidationException $exception) {
+
+            return response(['errors' => $exception->errors()], 422);
         } catch (Exception $exception) {
 
             Log::error($exception);
