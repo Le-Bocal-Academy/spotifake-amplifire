@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('password');
             $table->dateTime('created_at');
             $table->dateTime('updated_at');
+            $table->dateTime('email_verified_at')->nullable()->default(null);
         });
 
         Schema::enableForeignKeyConstraints();

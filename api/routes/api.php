@@ -4,7 +4,9 @@ use App\Http\Controllers\AlbumController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TrackController;
 use App\Http\Controllers\PlaylistController;
+use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\SearchController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,20 +20,31 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login', [AuthController::class, 'login']);
-Route::post('/forgotPassword', [AuthController::class, 'forgotPassword']);
-Route::post('/resetPassword', [AuthController::class, 'resetPassword']);
+Route::post('/register', [RegisterController::class, 'register']);
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::controller(AuthController::class)->group(function () {
+    Route::post('/login', 'login');
+    Route::post('/forgotPassword', 'forgotPassword');
+    Route::post('/resetPassword', 'resetPassword');
+});
+
+Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/logout', [AuthController::class, 'logout']);
 
-    Route::get('/playlist', [PlaylistController::class, 'getAllPlaylist']);
-    Route::post('/playlist/create', [PlaylistController::class, 'createPlaylist']);
-    Route::post('/playlist/addTrack', [PlaylistController::class, 'addTrack']);
-    Route::post('/playlist/deleteTrack', [PlaylistController::class, 'deleteTrack']);
-    Route::post('/playlist/deletePlaylist', [PlaylistController::class, 'deletePlaylist']);
-    Route::put('/playlist/renamePlaylist', [PlaylistController::class, 'renamePlaylist']);
+    // Route::get('/playlist', [PlaylistController::class, 'getAllPlaylist']);
+    // Route::post('/playlist/create', [PlaylistController::class, 'createPlaylist']);
+    // Route::post('/playlist/addTrack', [PlaylistController::class, 'addTrack']);
+    // Route::post('/playlist/deleteTrack', [PlaylistController::class, 'deleteTrack']);
+    // Route::post('/playlist/deletePlaylist', [PlaylistController::class, 'deletePlaylist']);
+    // Route::put('/playlist/renamePlaylist', [PlaylistController::class, 'renamePlaylist']);
+    Route::controller(PlaylistController::class)->group(function () {
+        Route::get('/playlist', 'getAllPlaylist');
+        Route::post('/playlist/create', 'createPlaylist');
+        Route::post('/playlist/addTrack', 'addTrack');
+        Route::post('/playlist/deleteTrack', 'deleteTrack');
+        Route::post('/playlist/deletePlaylist', 'deletePlaylist');
+        Route::put('/playlist/renamePlaylist', 'renamePlaylist');
+    });
 
     Route::get('/track/{id}', [TrackController::class, 'play'])->name('track.play');
 

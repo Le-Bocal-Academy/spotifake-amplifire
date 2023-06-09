@@ -12,10 +12,12 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Mail\MailVerification;
+use Illuminate\Support\Facades\Mail;
 
 class AuthController extends Controller
 {
-
     public function register(Request $request)
     {
         try {
@@ -53,9 +55,11 @@ class AuthController extends Controller
 
             $validatedData['password'] = Hash::make($request->password);
 
+            // Account::create($validatedData);
+
             Account::create($validatedData);
 
-            return response(['message' => 'Utilisateur créé'], 201);
+            return response(['message' => 'Compte créé, vous allez recevoir un mail pour activer votre compte.'], 201);
         } catch (ValidationException $exception) {
 
             return response(['errors' => $exception->errors()], 422);
@@ -65,7 +69,6 @@ class AuthController extends Controller
             return response(['erreur' => 'Une erreur s\'est produite'], 500);
         }
     }
-
 
     public function login(Request $request)
     {
@@ -136,7 +139,6 @@ class AuthController extends Controller
         }
     }
 
-
     public function resetPassword(Request $request)
     {
         try {
@@ -176,6 +178,25 @@ class AuthController extends Controller
         } catch (Exception $e) {
             Log::error($e);
             return response()->json(['erreur' => 'Une erreur s\'est produite'], 500);
+        }
+    }
+
+    public function verifyEmail($id)
+    {
+        try {
+            $account = Account::findOrFail($id);
+
+            $account->email_verified_at = now();
+            $account->save();
+
+            return response(['message' => 'Votre compte a été activé avec succès !'], 200);
+        } catch (ModelNotFoundException $exception) {
+
+            return response(['erreur' => 'Utilisateur non trouvé'], 404);
+        } catch (Exception $exception) {
+
+            Log::error($exception);
+            return response(['erreur' => 'Une erreur s\'est produite'], 500);
         }
     }
 }
