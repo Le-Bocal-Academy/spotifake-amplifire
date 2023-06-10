@@ -37,8 +37,8 @@ export default {
   },
   data() {
     return {
-      email: "ambre.rizzo@gmail.com",
-      password: "Azerty#12345",
+      email: "",
+      password: "",
     };
   },
   methods: {

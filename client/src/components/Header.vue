@@ -3,6 +3,7 @@
     <div class="logo">
       <img alt="Logo" src="../assets/logo.png" />
     </div>
+    <slot></slot>
     <div class="nav">
       <YellowButton text="Inscription" link="/" />
       <BlueButton text="Connexion" link="/login" />

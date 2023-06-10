@@ -1,6 +1,18 @@
 <template>
   <div>
-    <Header />
+    <Header>
+      <template v-slot:default>
+        <form @submit.prevent="handleSubmit" style="width: 40%">
+          <input
+            class="searchBarHome"
+            type="text"
+            placeholder="Rechercher"
+            v-model="searchValue"
+          />
+        </form>
+      </template>
+    </Header>
+
     <div class="bgWhite homeContainer">
       <div class="userInfos">
         <div class="user">
@@ -116,6 +128,7 @@ export default {
       nickname: "",
       email: "",
       clickedPlaylist: null,
+      searchValue: "",
     };
   },
   mounted() {
@@ -177,6 +190,9 @@ export default {
       const playlist = this.playlists.find((playlist) => playlist.id == id);
       this.clickedPlaylist = playlist;
     },
+    handleSubmit(e) {
+      console.log(this.searchValue);
+    },
   },
 };
 </script>
@@ -223,5 +239,18 @@ export default {
 .underlign {
   width: 105px;
   height: 3px;
+}
+
+.searchBarHome {
+  width: 100%;
+  padding: 5px 10px;
+  background: #ffffff24;
+  border: none;
+  border-radius: 5px;
+  color: white;
+}
+
+.searchBarHome:focus {
+  outline: none;
 }
 </style>
