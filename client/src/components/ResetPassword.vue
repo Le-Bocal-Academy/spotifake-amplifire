@@ -2,8 +2,19 @@
   <section>
     <article class="bgBlack">
       <div class="col forms">
-        <Field label="adresse email" fieldType="text" @getValue="getEmail" />
-        <RedButton text="Envoyer un email" @click="sendNewPassword" />
+        <Field label="token" fieldType="text" @getValue="getToken" />
+        <Field label="email" fieldType="text" @getValue="getEmail" />
+        <Field
+          label="nouveau mot de passe"
+          fieldType="text"
+          @getValue="getNewPassword"
+        />
+        <Field
+          label="confirmation du mot de passe"
+          fieldType="text"
+          @getValue="getConfirmationNewPasword"
+        />
+        <RedButton text="Changer mon mot de passe" @click="sendNewPassword" />
       </div>
     </article>
   </section>
@@ -22,12 +33,18 @@ export default {
   data() {
     return {
       email: "",
+      token: "",
+      newPassword: "",
+      confirmationNewPasword: "",
     };
   },
   methods: {
-    async sendNewPassword() {
+    async resetPassword() {
       const body = {
+        token: this.token,
         email: this.email,
+        password: this.newPassword,
+        password_confirmation: this.confirmationNewPasword,
       };
       const options = {
         method: "post",
@@ -38,12 +55,21 @@ export default {
         body: JSON.stringify(body),
       };
       const url = config.url;
-      const data = await fetch(url + "/forgotPassword", options);
+      const data = await fetch(url + "/resetPassword", options);
       const response = await data.json();
       console.log(response);
     },
     getEmail(value) {
       this.email = value;
+    },
+    getToken(value) {
+      this.token = value;
+    },
+    getNewPassword(value) {
+      this.newPassword = value;
+    },
+    getConfirmationNewPasword(value) {
+      this.confirmationNewPasword = value;
     },
   },
 };

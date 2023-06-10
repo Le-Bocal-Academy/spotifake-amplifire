@@ -32,22 +32,25 @@ body {
 .bgRed {
   background: #ff2a2a;
 }
+.bgWhite {
+  background: white;
+}
 .white {
   color: white;
 }
 .black {
   color: #2b2b2b;
 }
-.Blue {
+.blue {
   color: #bffff1;
 }
 .yellow {
   color: #ffc515;
 }
-.Orange {
+.orange {
   color: #ff7800;
 }
-.Red {
+.red {
   color: #ff2a2a;
 }
 p {
@@ -94,5 +97,9 @@ button {
   margin: 5px;
   border: none;
   border-radius: 5px;
+}
+
+.capitalize {
+  text-transform: capitalize;
 }
 </style>
