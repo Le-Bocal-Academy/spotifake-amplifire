@@ -19,7 +19,7 @@ class SearchController extends Controller
 
             $tracks = Track::where('title', 'like', "%$query%")->get();
             $albumTrackName = Track::where('title', 'like', "%$query%")->pluck('album_id');
-            $trackArtistName = Album::where('title', 'like', "%$query%")->pluck('artist_id');
+            $trackArtistName = Album::where('name', 'like', "%$query%")->pluck('artist_id');
             $albums = Album::where('title', 'like', "%$query%")->get();
             $artists = Artist::where('name', 'like', "%$query%")->get();
             $style = Style::where('style', 'like', "%$query%")->get();
