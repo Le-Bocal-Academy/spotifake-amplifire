@@ -32,26 +32,95 @@
         v-if="displayMenu && selectedPlaylistId == playlist.id"
         class="playlistMenu"
       >
-        <p id="menu1" class="red" @click="console.log('rename')">Renommer</p>
-        <p id="menu2" class="red" @click="console.log('delete')">Supprimer</p>
+        <p
+          id="menu1"
+          class="red"
+          @click="showPopupRenamePlaylist = !showPopupRenamePlaylist"
+        >
+          Renommer
+        </p>
+        <p id="menu2" class="red" @click="delPlaylist(playlist.id)">
+          Supprimer
+        </p>
       </div>
     </div>
+
+    <Modal v-if="showPopupRenamePlaylist" title="Renommer la playlist">
+      <template v-slot:content>
+        <Fields
+          label="nom de la playlist"
+          fieldType="text"
+          @getValue="getPlaylistName"
+        />
+        <span>
+          <BlueButton
+            text="Annuler"
+            @click="
+              showPopupRenamePlaylist = false;
+              this.playlistName = null;
+            "
+          />
+          <RedButton text="Enregistrer" @click="this.renamePlaylist()" />
+        </span>
+      </template>
+    </Modal>
   </div>
 </template>
 <script>
+import playlists from "@/_lib/requests/playlists.js";
+import Modal from "@/components/UI/modal.vue";
+import Fields from "@/components/UI/fields.vue";
+import RedButton from "@/components/UI/redButton.vue";
+
 export default {
   props: {
     playlists: Array,
+  },
+  components: {
+    Modal,
+    Fields,
+    RedButton,
   },
   data() {
     return {
       displayMenu: false,
       selectedPlaylistId: null,
+      playlistName: null,
+      showPopupRenamePlaylist: false,
     };
   },
   methods: {
     sendPlaylistId(id) {
       this.$emit("clickedPlaylist", id);
+    },
+    async delPlaylist(id) {
+      const body = {
+        playlist_id: id,
+      };
+      const response = await playlists.delPlaylist(body);
+      const playlistIndex = this.playlists.findIndex(
+        (playlist) => playlist.id === id
+      );
+      if (playlistIndex !== -1) {
+        this.playlists.splice(playlistIndex, 1);
+      }
+      this.displayMenu = false;
+      console.log(response);
+    },
+    async renamePlaylist() {
+      const body = {
+        playlist_id: this.selectedPlaylistId,
+        name: this.playlistName,
+      };
+      const response = await playlists.renamePlaylist(body);
+      // change name playlist ou recharge comp
+      window.location.reload();
+      this.displayMenu = false;
+      this.showPopupRenamePlaylist = false;
+      console.log(response);
+    },
+    getPlaylistName(value) {
+      this.playlistName = value;
     },
   },
 };

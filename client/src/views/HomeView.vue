@@ -2,7 +2,7 @@
   <div>
     <Header>
       <template v-slot:default>
-        <form @submit.prevent="handleSubmit" style="width: 40%">
+        <form @submit.prevent="search" style="width: 40%">
           <input
             class="searchBarHome"
             type="text"
@@ -13,13 +13,19 @@
       </template>
     </Header>
 
-    <div class="bgWhite homeContainer">
+    <SearchResults
+      v-if="searchData"
+      :data="this.searchData"
+      :playlists="this.playlists"
+    />
+
+    <div v-else class="bgWhite homeContainer">
       <div class="userInfos">
         <div class="user">
           <h1 class="yellow capitalize">{{ this.nickname }}</h1>
           <p class="p-S">12 folowers . 8 following</p>
         </div>
-        <RedButton link="#" @click="play">
+        <RedButton link="#" @click="playRandom">
           <template v-slot:default>
             <i class="fa-solid fa-shuffle"></i> Lecture aléatoire
           </template>
@@ -67,7 +73,13 @@
                   this.newPlaylistName = null;
                 "
               />
-              <RedButton text="Ajouter" @click="this.createPlaylist" />
+              <RedButton
+                text="Ajouter"
+                @click="
+                  this.createPlaylist();
+                  showPopupAddPlaylist = false;
+                "
+              />
             </span>
           </template>
         </Modal>
@@ -90,12 +102,14 @@ import Header from "@/components/Header.vue";
 import Footer from "@/components/Footer.vue";
 import RedButton from "@/components/UI/redButton.vue";
 import playlists from "@/_lib/requests/playlists.js";
+import search from "@/_lib/requests/search.js";
 import Modal from "../components/UI/modal.vue";
 import Fields from "../components/UI/fields.vue";
 import YellowButton from "../components/UI/yellowButton.vue";
 import BlueButton from "../components/UI/blueButton.vue";
 import Playlists from "../components/AllPlaylists.vue";
 import Playlist from "../components/Playlist.vue";
+import SearchResults from "../components/SearchResults.vue";
 
 export default {
   name: "HomeView",
@@ -109,6 +123,7 @@ export default {
     BlueButton,
     Playlists,
     Playlist,
+    SearchResults,
   },
   data() {
     return {
@@ -129,6 +144,7 @@ export default {
       email: "",
       clickedPlaylist: null,
       searchValue: "",
+      searchData: null,
     };
   },
   mounted() {
@@ -147,6 +163,7 @@ export default {
         name: this.newPlaylistName,
       };
       const response = await playlists.create(body);
+      window.location.reload();
       console.log(response);
     },
     async addTrack() {
@@ -165,21 +182,6 @@ export default {
       const response = await playlists.delTrack(body);
       console.log(response);
     },
-    async delPlaylist() {
-      const body = {
-        playlist_id: this.playlistId,
-      };
-      const response = await playlists.delPlaylist(body);
-      console.log(response);
-    },
-    async renamePlaylist() {
-      const body = {
-        playlist_id: this.playlistId,
-        name: this.playlistRename,
-      };
-      const response = await playlists.renamePlaylist(body);
-      console.log(response);
-    },
     getPlaylistName(value) {
       this.newPlaylistName = value;
     },
@@ -190,8 +192,11 @@ export default {
       const playlist = this.playlists.find((playlist) => playlist.id == id);
       this.clickedPlaylist = playlist;
     },
-    handleSubmit(e) {
+    async search() {
       console.log(this.searchValue);
+      const response = await search.get(this.searchValue);
+      this.searchData = response.data;
+      console.log(response.data);
     },
   },
 };
