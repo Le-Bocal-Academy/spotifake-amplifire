@@ -20,7 +20,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/register', [AuthController::class, 'register']);
 
-Route::get('/confirm-email/{id}', [AuthController::class, 'confirmEmail'])->name('confirm-email');
+Route::get('/confirmEmail/{id}', [AuthController::class, 'confirmEmail'])->name('confirmEmail');
+
+Route::get('/resendEmailConfirmation/{id}', [AuthController::class, 'resendEmailConfirmation'])->name('resendEmailConfirmation');
 
 Route::controller(AuthController::class)->group(function () {
     Route::post('/login', 'login')->name('login');

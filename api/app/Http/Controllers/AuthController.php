@@ -208,12 +208,10 @@ class AuthController extends Controller
     }
 
 
-    public function resendEmail(Request $request)
+    public function resendEmailConfirmation($id)
     {
         try {
-            $request->validate(['email' => 'required|email']);
-
-            $account = Account::where('email', $request->email)->first();
+            $account = Account::find($id);
 
             if (!$account) {
                 return response(['erreur' => 'Utilisateur non trouvé'], 404);
@@ -223,16 +221,12 @@ class AuthController extends Controller
                 return response(['erreur' => 'Votre compte est déjà activé'], 400);
             }
 
-            $account->sendEmailVerificationNotification();
+            $account->sendMailAdressConfirmationNotification($account->id);
 
-            return response(['message' => 'Un email à été envoyé à l\'adresse ' . $request->email], 200);
-        } catch (ValidationException $exception) {
-
-            return response(['errors' => $exception->errors()], 422);
-        } catch (Exception $exception) {
-
-            Log::error($exception);
-            return response(['erreur' => 'Une erreur s\'est produite'], 500);
+            return response()->json(['message' => 'Un email a été envoyé à l\'adresse ' . $account->email], 200);
+        } catch (Exception $e) {
+            Log::error($e);
+            return response()->json(['erreur' => 'Une erreur s\'est produite'], 500);
         }
     }
 }

@@ -38,7 +38,7 @@ class MailConfirmation extends Notification
             ->greeting('Bonjour ' . $notifiable->firstname . ' ' . $notifiable->lastname . ' ! ')
             ->subject('Confirmation de votre adresse mail')
             ->line('Merci de votre inscription ! Avant de commencer, vous devez confirmer votre adresse mail, afin d\'activer votre compte.')
-            ->action('Confirmer mon adresse mail', route('confirm-email', $notifiable->id))
+            ->action('Confirmer mon adresse mail', route('confirmEmail', $notifiable->id))
             ->line('Si vous n\'avez pas créé de compte, aucune autre action n\'est requise.')
             ->salutation('L\'équipe d\'' . config('app.name') . '.');
     }
