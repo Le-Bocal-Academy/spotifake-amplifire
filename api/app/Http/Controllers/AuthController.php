@@ -12,12 +12,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Illuminate\Auth\Events\PasswordReset;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use App\Mail\MailVerification;
-use Illuminate\Auth\Events\Registered;
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
-use Illuminate\Support\Facades\Mail;
-use PharIo\Manifest\Email;
+use App\Notifications\MailConfirmation;
 
 class AuthController extends Controller
 {
@@ -58,9 +53,13 @@ class AuthController extends Controller
 
             $validatedData['password'] = Hash::make($request->password);
 
-            $account = Account::create($validatedData);
+            Account::create($validatedData);
 
-            event(new Registered($account));
+            $account = Account::where('email', $validatedData['email'])->first();
+
+            $account->confirmation_token = Str::random(60);
+
+            $account->sendMailAdressConfirmationNotification($account->confirmation_token);
 
             return response(['message' => 'Compte créé, vous allez recevoir un mail pour activer votre compte.'], 201);
         } catch (ValidationException $exception) {
@@ -184,29 +183,18 @@ class AuthController extends Controller
         }
     }
 
-    public function verifyEmail(EmailVerificationRequest $request, $id, $hash)
+    public function confirmEmail(Request $request)
     {
         try {
-            $request->fulfill();
+            $request->validate([
+                'id' => 'required|integer',
+                'confirmation_token' => 'required|string',
+            ], [
+                'id.required' => 'L\'id est requis',
+                'confirmation_token.required' => 'Le token est requis',
+            ]);
 
-            return response(['message' => 'Votre compte a été activé avec succès !'], 200);
-            redirect()->route('login');
-        } catch (ModelNotFoundException $exception) {
-
-            return response(['erreur' => 'Utilisateur non trouvé'], 404);
-        } catch (Exception $exception) {
-
-            Log::error($exception);
-            return response(['erreur' => 'Une erreur s\'est produite'], 500);
-        }
-    }
-
-    public function resendEmail(Request $request)
-    {
-        try {
-            $request->validate(['email' => 'required|email']);
-
-            $account = Account::where('email', $request->email)->first();
+            $account = Account::where('id', $request->id)->first();
 
             if (!$account) {
                 return response(['erreur' => 'Utilisateur non trouvé'], 404);
@@ -216,16 +204,49 @@ class AuthController extends Controller
                 return response(['erreur' => 'Votre compte est déjà activé'], 400);
             }
 
-            $account->sendEmailVerificationNotification();
+            if ($account->confirmation_token !== $request->confirmation_token) {
+                return response(['erreur' => 'Token invalide'], 400);
+            }
 
-            return response(['message' => 'Un email à été envoyé à l\'adresse ' . $request->email], 200);
+            $account->email_verified_at = now();
+            $account->confirmation_token = null;
+            $account->save();
+
+            return response()->json(['message' => 'Votre compte a été activé avec succès'], 200);
         } catch (ValidationException $exception) {
 
             return response(['errors' => $exception->errors()], 422);
-        } catch (Exception $exception) {
-
-            Log::error($exception);
-            return response(['erreur' => 'Une erreur s\'est produite'], 500);
+        } catch (Exception $e) {
+            Log::error($e);
+            return response()->json(['erreur' => 'Une erreur s\'est produite'], 500);
         }
     }
+
+    // public function resendEmail(Request $request)
+    // {
+    //     try {
+    //         $request->validate(['email' => 'required|email']);
+
+    //         $account = Account::where('email', $request->email)->first();
+
+    //         if (!$account) {
+    //             return response(['erreur' => 'Utilisateur non trouvé'], 404);
+    //         }
+
+    //         if ($account->email_verified_at) {
+    //             return response(['erreur' => 'Votre compte est déjà activé'], 400);
+    //         }
+
+    //         $account->sendEmailVerificationNotification();
+
+    //         return response(['message' => 'Un email à été envoyé à l\'adresse ' . $request->email], 200);
+    //     } catch (ValidationException $exception) {
+
+    //         return response(['errors' => $exception->errors()], 422);
+    //     } catch (Exception $exception) {
+
+    //         Log::error($exception);
+    //         return response(['erreur' => 'Une erreur s\'est produite'], 500);
+    //     }
+    // }
 }
