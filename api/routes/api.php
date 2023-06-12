@@ -20,12 +20,14 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/register', [AuthController::class, 'register']);
 
-Route::post('/confirm-email/{id}/{confirmation_token}', [AuthController::class, 'confirmEmail'])->name('confirm-email');
+Route::get('/confirm-email/{id}', [AuthController::class, 'confirmEmail'])->name('confirm-email');
 
-Route::controller(AuthController::class)->group(function () {
-    Route::post('/login', 'login')->name('login');
-    Route::post('/forgotPassword', 'forgotPassword');
-    Route::post('/resetPassword', 'resetPassword');
+Route::middleware('verified')->group(function () {
+    Route::controller(AuthController::class)->group(function () {
+        Route::post('/login', 'login')->name('login');
+        Route::post('/forgotPassword', 'forgotPassword');
+        Route::post('/resetPassword', 'resetPassword');
+    });
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
