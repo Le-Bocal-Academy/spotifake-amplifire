@@ -50,8 +50,8 @@ class Account extends Authenticatable
         $this->notify(new CustomResetPasswordNotification($token));
     }
 
-    public function sendMailAdressConfirmationNotification()
+    public function sendMailAdressConfirmationNotification($id, $confirmation_token)
     {
-        $this->notify(new MailConfirmation());
+        $this->notify(new MailConfirmation($id, $confirmation_token));
     }
 }

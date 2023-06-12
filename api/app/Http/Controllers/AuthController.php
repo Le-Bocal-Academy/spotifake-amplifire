@@ -12,7 +12,6 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Illuminate\Auth\Events\PasswordReset;
-use App\Notifications\MailConfirmation;
 
 class AuthController extends Controller
 {
@@ -59,7 +58,7 @@ class AuthController extends Controller
 
             $account->confirmation_token = Str::random(60);
 
-            $account->sendMailAdressConfirmationNotification($account->confirmation_token);
+            $account->sendMailAdressConfirmationNotification($account->id, $account->confirmation_token);
 
             return response(['message' => 'Compte créé, vous allez recevoir un mail pour activer votre compte.'], 201);
         } catch (ValidationException $exception) {
