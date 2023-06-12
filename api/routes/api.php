@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TrackController;
 use App\Http\Controllers\PlaylistController;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\SongController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,13 +19,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('/register', [AuthController::class, 'register']);
-
-Route::get('/confirmEmail/{id}', [AuthController::class, 'confirmEmail'])->name('confirmEmail');
-
-Route::get('/resendEmailConfirmation/{id}', [AuthController::class, 'resendEmailConfirmation'])->name('resendEmailConfirmation');
-
 Route::controller(AuthController::class)->group(function () {
+    Route::post('/register', 'register');
+    Route::get('/confirmEmail/{id}', 'confirmEmail')->name('confirmEmail');
+    Route::get('/resendEmailConfirmation/{id}', 'resendEmailConfirmation')->name('resendEmailConfirmation');
     Route::post('/login', 'login')->name('login');
     Route::post('/forgotPassword', 'forgotPassword');
     Route::post('/resetPassword', 'resetPassword');
@@ -43,10 +41,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/playlist/renamePlaylist', 'renamePlaylist');
     });
 
-    Route::get('/track/{id}', [TrackController::class, 'play'])->name('track.play');
-
-    Route::get('/album', [AlbumController::class, 'getAlbums']);
-    Route::get('/album/{id}', [AlbumController::class, 'getAlbumById']);
-
-    Route::get('/search', [SearchController::class, 'search']);
+    Route::controller(SongController::class)->group(function () {
+        Route::get('/track/{id}', 'play')->name('track.play');
+        Route::get('/album', 'getAlbums');
+        Route::get('/album/{id}', 'getAlbumById');
+        Route::get('/search', 'search');
+    });
 });

@@ -25,6 +25,7 @@ class Account extends Authenticatable
         'lastname',
         'email',
         'password',
+        'remember_token'
     ];
 
     /**

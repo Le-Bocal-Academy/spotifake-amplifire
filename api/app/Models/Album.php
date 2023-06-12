@@ -11,6 +11,15 @@ class Album extends Model
 
   protected $fillable = ['title', 'artist_id', 'year', 'description'];
 
+  /**
+   * 
+   * @var array<int, string>
+   */
+  protected $hidden = [
+    'created_at',
+    'updated_at',
+  ];
+
   public function artist()
   {
     return $this->belongsTo(Artist::class);

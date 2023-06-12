@@ -11,6 +11,15 @@ class Artist extends Model
 
   protected $fillable = ['name'];
 
+  /**
+   * 
+   * @var array<int, string>
+   */
+  protected $hidden = [
+    'created_at',
+    'updated_at',
+  ];
+
   public function albums()
   {
     return $this->hasMany(Album::class);

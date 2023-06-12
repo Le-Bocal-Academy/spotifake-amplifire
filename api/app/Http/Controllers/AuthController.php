@@ -164,7 +164,7 @@ class AuthController extends Controller
                 function ($user, $password) {
                     $user->forceFill([
                         'password' => Hash::make($password)
-                    ])->setRememberToken(Str::random(60));
+                    ]);
 
                     $user->save();
 
@@ -173,7 +173,7 @@ class AuthController extends Controller
             );
 
             return $status === Password::PASSWORD_RESET
-                ? response()->json(['message' => 'Un email à été envoyé à l\'adresse ' . $request->email], 200)
+                ? response()->json(['message' => 'Le mot de passe a été modifié' . $request->email], 200)
                 : response()->json(['erreur' => [__($status)]], 400);
         } catch (ValidationException $exception) {
 
@@ -200,7 +200,8 @@ class AuthController extends Controller
             $account->email_verified_at = now();
             $account->save();
 
-            return response()->json(['message' => 'Votre compte a été activé avec succès'], 200);
+            // return response()->json(['message' => 'Votre compte a été activé avec succès'], 200);
+            return redirect()->to(config('app.url') . ":8080/login");
         } catch (Exception $e) {
             Log::error($e);
             return response()->json(['erreur' => 'Une erreur s\'est produite'], 500);
