@@ -22,15 +22,14 @@ Route::post('/register', [AuthController::class, 'register']);
 
 Route::get('/confirm-email/{id}', [AuthController::class, 'confirmEmail'])->name('confirm-email');
 
-Route::middleware('verified')->group(function () {
-    Route::controller(AuthController::class)->group(function () {
-        Route::post('/login', 'login')->name('login');
-        Route::post('/forgotPassword', 'forgotPassword');
-        Route::post('/resetPassword', 'resetPassword');
-    });
+Route::controller(AuthController::class)->group(function () {
+    Route::post('/login', 'login')->name('login');
+    Route::post('/forgotPassword', 'forgotPassword');
+    Route::post('/resetPassword', 'resetPassword');
 });
 
-Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+Route::middleware('auth:sanctum')->group(function () {
+
     Route::get('/logout', [AuthController::class, 'logout']);
 
     Route::controller(PlaylistController::class)->group(function () {

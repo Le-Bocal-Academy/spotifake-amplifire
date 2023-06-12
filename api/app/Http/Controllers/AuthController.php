@@ -86,6 +86,10 @@ class AuthController extends Controller
 
             unset($account->password);
 
+            if (!$account->email_verified_at) {
+                return response(['erreur' => 'Votre compte n\'est pas encore activé. Veuillez vérifier vos mails.'], 400);
+            }
+
             $account->token = $account->createToken('token')->plainTextToken;
 
             // retourne l'access token au front qui doit le stocker en "localstorage" 
@@ -204,31 +208,31 @@ class AuthController extends Controller
     }
 
 
-    // public function resendEmail(Request $request)
-    // {
-    //     try {
-    //         $request->validate(['email' => 'required|email']);
+    public function resendEmail(Request $request)
+    {
+        try {
+            $request->validate(['email' => 'required|email']);
 
-    //         $account = Account::where('email', $request->email)->first();
+            $account = Account::where('email', $request->email)->first();
 
-    //         if (!$account) {
-    //             return response(['erreur' => 'Utilisateur non trouvé'], 404);
-    //         }
+            if (!$account) {
+                return response(['erreur' => 'Utilisateur non trouvé'], 404);
+            }
 
-    //         if ($account->email_verified_at) {
-    //             return response(['erreur' => 'Votre compte est déjà activé'], 400);
-    //         }
+            if ($account->email_verified_at) {
+                return response(['erreur' => 'Votre compte est déjà activé'], 400);
+            }
 
-    //         $account->sendEmailVerificationNotification();
+            $account->sendEmailVerificationNotification();
 
-    //         return response(['message' => 'Un email à été envoyé à l\'adresse ' . $request->email], 200);
-    //     } catch (ValidationException $exception) {
+            return response(['message' => 'Un email à été envoyé à l\'adresse ' . $request->email], 200);
+        } catch (ValidationException $exception) {
 
-    //         return response(['errors' => $exception->errors()], 422);
-    //     } catch (Exception $exception) {
+            return response(['errors' => $exception->errors()], 422);
+        } catch (Exception $exception) {
 
-    //         Log::error($exception);
-    //         return response(['erreur' => 'Une erreur s\'est produite'], 500);
-    //     }
-    // }
+            Log::error($exception);
+            return response(['erreur' => 'Une erreur s\'est produite'], 500);
+        }
+    }
 }
