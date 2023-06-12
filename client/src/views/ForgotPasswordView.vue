@@ -1,11 +1,8 @@
 <template>
   <div>
     <Header />
-    <div class="slogan">
-      <h2 class="p-XXXL">Enflammez le rythme de votre vie !</h2>
-      <p class="p-L">Souscrivez à notre offre unique.</p>
-    </div>
-    <Register />
+    <ForgotPassword />
+    <ResetPassword />
     <Footer />
   </div>
 </template>
@@ -14,14 +11,16 @@
 // @ is an alias to /src
 import Header from "@/components/Header.vue";
 import Footer from "@/components/Footer.vue";
-import Register from "@/components/Register.vue";
+import ForgotPassword from "@/components/ForgotPassword.vue";
+import ResetPassword from "../components/ResetPassword.vue";
 
 export default {
-  name: "RegisterView",
+  name: "ForgotPasswordView",
   components: {
     Header,
-    Register,
+    ForgotPassword,
     Footer,
+    ResetPassword,
   },
 };
 </script>

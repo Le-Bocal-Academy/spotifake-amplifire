@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Album;
 use App\Models\Artist;
+use App\Models\Style;
 use App\Models\Track;
 use Exception;
 use Illuminate\Http\Request;
@@ -19,11 +20,13 @@ class SearchController extends Controller
             $tracks = Track::where('title', 'like', "%$query%")->get();
             $albums = Album::where('title', 'like', "%$query%")->get();
             $artists = Artist::where('name', 'like', "%$query%")->get();
+            $style = Style::where('style', 'like', "%$query%")->get();
 
             $data = [
                 'tracks' => $tracks,
                 'albums' => $albums,
                 'artists' => $artists,
+                'style' => $style,
             ];
 
             $isEmpty = collect($data)->flatten()->isEmpty();
