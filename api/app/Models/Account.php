@@ -3,8 +3,8 @@
 namespace App\Models;
 
 use App\Notifications\CustomResetPasswordNotification;
+use App\Notifications\MailConfirmation;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -25,6 +25,7 @@ class Account extends Authenticatable
         'lastname',
         'email',
         'password',
+        'remember_token'
     ];
 
     /**
@@ -48,5 +49,10 @@ class Account extends Authenticatable
     public function sendPasswordResetNotification($token)
     {
         $this->notify(new CustomResetPasswordNotification($token));
+    }
+
+    public function sendMailAdressConfirmationNotification($id)
+    {
+        $this->notify(new MailConfirmation($id));
     }
 }

@@ -15,7 +15,6 @@ use Illuminate\Auth\Events\PasswordReset;
 
 class AuthController extends Controller
 {
-
     public function register(Request $request)
     {
         try {
@@ -55,7 +54,11 @@ class AuthController extends Controller
 
             Account::create($validatedData);
 
-            return response(['message' => 'Utilisateur créé'], 201);
+            $account = Account::where('email', $validatedData['email'])->first();
+
+            $account->sendMailAdressConfirmationNotification($account->id);
+
+            return response(['message' => 'Compte créé, vous allez recevoir un mail pour activer votre compte.'], 201);
         } catch (ValidationException $exception) {
 
             return response(['errors' => $exception->errors()], 422);
@@ -65,7 +68,6 @@ class AuthController extends Controller
             return response(['erreur' => 'Une erreur s\'est produite'], 500);
         }
     }
-
 
     public function login(Request $request)
     {
@@ -83,6 +85,10 @@ class AuthController extends Controller
             }
 
             unset($account->password);
+
+            if (!$account->email_verified_at) {
+                return response(['erreur' => 'Votre compte n\'est pas encore activé. Veuillez vérifier vos mails.'], 400);
+            }
 
             $account->token = $account->createToken('token')->plainTextToken;
 
@@ -136,7 +142,6 @@ class AuthController extends Controller
         }
     }
 
-
     public function resetPassword(Request $request)
     {
         try {
@@ -159,7 +164,7 @@ class AuthController extends Controller
                 function ($user, $password) {
                     $user->forceFill([
                         'password' => Hash::make($password)
-                    ])->setRememberToken(Str::random(60));
+                    ]);
 
                     $user->save();
 
@@ -168,11 +173,58 @@ class AuthController extends Controller
             );
 
             return $status === Password::PASSWORD_RESET
-                ? response()->json(['message' => 'Un email à été envoyé à l\'adresse ' . $request->email], 200)
+                ? response()->json(['message' => 'Le mot de passe a été modifié' . $request->email], 200)
                 : response()->json(['erreur' => [__($status)]], 400);
         } catch (ValidationException $exception) {
 
             return response(['errors' => $exception->errors()], 422);
+        } catch (Exception $e) {
+            Log::error($e);
+            return response()->json(['erreur' => 'Une erreur s\'est produite'], 500);
+        }
+    }
+
+    public function confirmEmail($id)
+    {
+        try {
+            $account = Account::find($id);
+
+            if (!$account) {
+                return response(['erreur' => 'Utilisateur non trouvé'], 404);
+            }
+
+            if ($account->email_verified_at) {
+                return response(['erreur' => 'Votre compte est déjà activé'], 400);
+            }
+
+            $account->email_verified_at = now();
+            $account->save();
+
+            // return response()->json(['message' => 'Votre compte a été activé avec succès'], 200);
+            return redirect()->to(config('app.url') . ":8080/login");
+        } catch (Exception $e) {
+            Log::error($e);
+            return response()->json(['erreur' => 'Une erreur s\'est produite'], 500);
+        }
+    }
+
+
+    public function resendEmailConfirmation($id)
+    {
+        try {
+            $account = Account::find($id);
+
+            if (!$account) {
+                return response(['erreur' => 'Utilisateur non trouvé'], 404);
+            }
+
+            if ($account->email_verified_at) {
+                return response(['erreur' => 'Votre compte est déjà activé'], 400);
+            }
+
+            $account->sendMailAdressConfirmationNotification($account->id);
+
+            return response()->json(['message' => 'Un email a été envoyé à l\'adresse ' . $account->email], 200);
         } catch (Exception $e) {
             Log::error($e);
             return response()->json(['erreur' => 'Une erreur s\'est produite'], 500);
