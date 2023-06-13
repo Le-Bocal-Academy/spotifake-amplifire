@@ -1,10 +1,7 @@
 <?php
 
-use App\Http\Controllers\AlbumController;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\TrackController;
 use App\Http\Controllers\PlaylistController;
-use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SongController;
 use Illuminate\Support\Facades\Route;
 
