@@ -38,11 +38,17 @@ class SongController extends Controller
       $query = $request->input('query');
 
       $tracks = Track::where('title', 'like', "%$query%")->get();
+      $trackAlbumName = Track::where('title', 'like', "%$query%")->pluck('album_id')->map(function ($albumId) {
+        return Album::findOrFail($albumId);
+      });
+      $trackArtistName = $trackAlbumName->pluck('artist_id')->map(function ($artistId) {
+        return Artist::findOrFail($artistId);
+      });
       $albums = Album::where('title', 'like', "%$query%")->get();
       $artists = Artist::where('name', 'like', "%$query%")->get();
 
       $data = [
-        'tracks' => $tracks,
+        'tracks' => [$tracks, $trackAlbumName, $trackArtistName],
         'albums' => $albums,
         'artists' => $artists,
       ];
