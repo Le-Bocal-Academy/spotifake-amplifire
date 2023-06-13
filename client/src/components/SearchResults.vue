@@ -31,8 +31,8 @@
         <tbody>
           <tr v-for="track in data.tracks" :key="track.title">
             <td>{{ track.title }}</td>
-            <td>{{ getArtistName(track.artist_id) }}</td>
-            <td>{{ getAlbumTitle(track.album_id) }}</td>
+            <td>{{ track.artist_name }}</td>
+            <td>{{ track.album_title }}</td>
             <td>{{ track.duration }}</td>
             <td>
               <button @click="playTrack(track.id)">
