@@ -1,5 +1,6 @@
 <template>
   <div class="searchData">
+    <button @click="sendCloseSearch">Revenir sur mon profil</button>
     <section>
       <h2 class="p-L yellow">Titres</h2>
       <table>
@@ -65,7 +66,9 @@
       <h2 class="p-L yellow">Albums</h2>
       <div class="album-list">
         <div v-for="album in data.albums" :key="album.id" class="album">
-          <div class="album-cover" style="width: 150px; height: 150px"></div>
+          <div class="albumIcon">
+            <i class="fa-solid fa-compact-disc p-XXL"></i>
+          </div>
           <div class="album-title">{{ album.title }}</div>
           <div class="album-artist">
             par {{ getArtistName(album.artist_id) }}
@@ -79,10 +82,14 @@
 <script>
 import tracks from "@/_lib/requests/tracks.js";
 import playlists from "@/_lib/requests/playlists.js";
+import YellowButton from "../components/UI/yellowButton.vue";
 export default {
   props: {
     data: Object,
     playlists: Array,
+  },
+  components: {
+    YellowButton,
   },
   data() {
     return {
@@ -118,6 +125,9 @@ export default {
     displayFunction(trackId) {
       this.displayMenu = !this.displayMenu;
       this.selectedTrackId = trackId;
+    },
+    sendCloseSearch() {
+      this.$emit("getEvent", false);
     },
   },
 };
@@ -160,12 +170,23 @@ table {
 
 th,
 td {
-  width: 20%;
+  width: 22%;
 }
 h2 {
   margin-bottom: 30px;
 }
 .albumsSection {
   margin-bottom: 150px;
+}
+.albumIcon {
+  width: 150px;
+  height: 150px;
+  padding: 5%;
+  border: 2px solid #26272b;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
 }
 </style>

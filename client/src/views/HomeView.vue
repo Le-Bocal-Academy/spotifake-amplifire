@@ -14,12 +14,16 @@
     </Header>
 
     <SearchResults
-      v-if="searchData"
+      v-if="searchData && displaySearchResults"
       :data="this.searchData"
       :playlists="this.playlists"
+      @getEvent="getSearchDisplay"
     />
 
-    <div v-else class="bgWhite homeContainer">
+    <div
+      v-if="!searchData || !displaySearchResults"
+      class="bgWhite homeContainer"
+    >
       <div class="userInfos">
         <div class="user">
           <h1 class="yellow capitalize">{{ this.nickname }}</h1>
@@ -40,12 +44,12 @@
               <div class="underlign bgYellow"></div>
             </div>
             <div class="searchPlaylistComponent">
-              <input
+              <!-- <input
                 type="text"
                 class="searchBar"
                 :placeholder="''"
                 v-html="this.placeholderContent"
-              />
+              /> -->
               <button
                 class="bgRed white p-M addButton"
                 @click="showPopupAddPlaylist = true"
@@ -87,8 +91,9 @@
         <Playlists
           :playlists="this.playlists"
           @clickedPlaylist="getPlaylistId"
+          @display="displayPlaylistFunction"
         />
-        <Playlist :playlist="this.clickedPlaylist" />
+        <Playlist v-if="displayPlaylist" :playlist="this.clickedPlaylist" />
       </div>
     </div>
 
@@ -145,6 +150,8 @@ export default {
       clickedPlaylist: null,
       searchValue: "",
       searchData: null,
+      displaySearchResults: false,
+      displayPlaylist: false,
     };
   },
   mounted() {
@@ -174,14 +181,7 @@ export default {
       const response = await playlists.addTrack(body);
       console.log(response);
     },
-    async delTrack() {
-      const body = {
-        playlist_id: this.playlistId,
-        track_id: this.trackId,
-      };
-      const response = await playlists.delTrack(body);
-      console.log(response);
-    },
+
     getPlaylistName(value) {
       this.newPlaylistName = value;
     },
@@ -193,10 +193,19 @@ export default {
       this.clickedPlaylist = playlist;
     },
     async search() {
+      this.displaySearchResults = true;
       console.log(this.searchValue);
       const response = await search.get(this.searchValue);
       this.searchData = response.data;
       console.log(response.data);
+    },
+    getSearchDisplay(bool) {
+      this.displaySearchResults = bool;
+      this.searchValue = "";
+    },
+    displayPlaylistFunction(bool) {
+      console.log(bool);
+      this.displayPlaylist = bool;
     },
   },
 };

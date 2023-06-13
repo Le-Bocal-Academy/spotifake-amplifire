@@ -8,7 +8,7 @@
       <div
         class="playlistIcon"
         @click="
-          console.log('playlist ' + playlist.id);
+          this.displayPlaylist = !this.displayPlaylist;
           this.sendPlaylistId(playlist.id);
         "
       >
@@ -87,11 +87,13 @@ export default {
       selectedPlaylistId: null,
       playlistName: null,
       showPopupRenamePlaylist: false,
+      displayPlaylist: false,
     };
   },
   methods: {
     sendPlaylistId(id) {
       this.$emit("clickedPlaylist", id);
+      this.$emit("display", this.displayPlaylist);
     },
     async delPlaylist(id) {
       const body = {
@@ -146,6 +148,7 @@ export default {
 .iconsContainer {
   display: flex;
   gap: 20px;
+  margin-bottom: 60px;
 }
 .playlistNameAndMenu {
   width: 100%;
