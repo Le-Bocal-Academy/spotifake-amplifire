@@ -49,13 +49,36 @@ class SongController extends Controller
         return $track;
       });
 
-      $albums = Album::where('title', 'like', "%$query%")->get();
+      $albums = Album::where('title', 'like', "%$query%")->get()->map(function ($album) {
+        $artist = Artist::findOrFail($album->artist_id);
+
+        $album->artist_name = $artist->name;
+
+        unset($album->artist_id);
+
+        return $album;
+      });
+
       $artists = Artist::where('name', 'like', "%$query%")->get();
+
+      $styles = Style::where('style', 'like', "%$query%")->get()->map(function ($style) {
+        $style->albums = Album::whereHas('styles', function ($query) use ($style) {
+          $query->where('style_id', $style->id);
+          unset($style->id);
+        })->get();
+        foreach ($style->albums as $album) {
+          $album->artist_name = Artist::findOrFail($album->artist_id)->name;
+          unset($album->artist_id);
+        }
+
+        return $style;
+      });
 
       $data = [
         'tracks' => $tracks,
         'albums' => $albums,
         'artists' => $artists,
+        'styles' => $styles
       ];
 
       $isEmpty = collect($data)->flatten()->isEmpty();
