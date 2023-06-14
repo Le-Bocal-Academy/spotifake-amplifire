@@ -201,7 +201,8 @@ export default {
     },
     getSearchDisplay(bool) {
       this.displaySearchResults = bool;
-      this.searchValue = "";
+      window.location.reload();
+      // this.searchValue = "";
     },
     displayPlaylistFunction(bool) {
       console.log(bool);

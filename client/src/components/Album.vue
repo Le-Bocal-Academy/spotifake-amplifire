@@ -1,0 +1,172 @@
+<template>
+  <div class="content">
+    <slot></slot>
+    <section class="albumContainer">
+      <div class="albumIcon">
+        <i class="fa-solid fa-compact-disc p-XXL"></i>
+      </div>
+      <div class="albumInfosContainer">
+        <div class="albumInfos">
+          <h1 class="yellow capitalize">{{ this.album.title }}</h1>
+          <p class="p-M">{{ album.artist.name }}</p>
+          <span
+            v-for="style in album.styles"
+            :key="style.id"
+            class="p-S orange"
+            >{{ style.style }}</span
+          >
+          <p class="p-XS">{{ album.description }}</p>
+        </div>
+        <RedButton link="#" @click="playRandom">
+          <template v-slot:default>
+            <i class="fa-solid fa-shuffle"></i> Lecture aléatoire
+          </template>
+        </RedButton>
+      </div>
+    </section>
+    <table>
+      <thead>
+        <tr class="black p-S">
+          <th>
+            titre
+            <hr />
+          </th>
+          <th>
+            durée
+            <hr />
+          </th>
+          <th>
+            &nbsp
+            <hr />
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="track in album.tracks" :key="track.id" class="orange">
+          <td>{{ track.title }}</td>
+          <td>{{ track.duration }}</td>
+          <td class="actionTD">
+            <button class="red bgWhite" @click="playTrack(track.id)">
+              <i class="fa-solid fa-play"></i>
+            </button>
+            <button
+              class="bgRed white deleteTrackButton"
+              @click="displayFunction(track.id)"
+            >
+              <i class="fa-solid fa-plus"></i>
+            </button>
+            <div
+              v-if="displayMenu && selectedTrackId == track.id"
+              class="playlistMenu"
+            >
+              <p
+                v-for="playlist in this.playlists"
+                :key="playlist.id"
+                class="red"
+                style="cursor: pointer"
+                @click="addToPlaylist(track.id, playlist.id)"
+              >
+                {{ playlist.name }}
+              </p>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</template>
+<script>
+import RedButton from "@/components/UI/redButton.vue";
+import playlists from "@/_lib/requests/playlists.js";
+export default {
+  components: {
+    RedButton,
+  },
+  props: {
+    album: Object,
+    playlists: Array,
+  },
+  data() {
+    return {
+      displayMenu: false,
+      selectedTrackId: null,
+    };
+  },
+  methods: {
+    async playTrack(trackId) {
+      console.log("play");
+      const response = await tracks.get(trackId);
+      console.log(response);
+    },
+    async addToPlaylist(trackId = null, playlistId = null) {
+      const body = {
+        playlist_id: playlistId,
+        track_id: trackId,
+      };
+      const response = await playlists.addTrack(body);
+      console.log(response);
+    },
+    displayFunction(trackId) {
+      this.displayMenu = !this.displayMenu;
+      this.selectedTrackId = trackId;
+    },
+  },
+};
+</script>
+<style scoped>
+.albumIcon {
+  width: 200px;
+  height: 200px;
+  padding: 5%;
+  border: 2px solid #26272b;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.albumInfos {
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.albumInfosContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 40px;
+}
+h1 {
+  margin: 0;
+}
+.albumContainer {
+  display: flex;
+  gap: 30px;
+}
+
+table {
+  width: 100%;
+}
+th,
+td {
+  width: 40%;
+}
+button {
+  padding: 5px;
+  width: 25px;
+  height: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 60px;
+}
+.actionTD {
+  display: flex;
+  justify-content: flex-end;
+}
+</style>

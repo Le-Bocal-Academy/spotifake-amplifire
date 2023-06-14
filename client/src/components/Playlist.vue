@@ -76,7 +76,7 @@ table {
 }
 th,
 td {
-  width: 33%;
+  width: 40%;
 }
 button {
   padding: 5px;
