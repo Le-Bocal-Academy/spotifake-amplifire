@@ -1,6 +1,7 @@
 <template>
-  <section>
-    <h2 class="p-L orange capitalize" v-if="playlist">{{ playlist.name }}</h2>
+  <section class="conainer">
+    <slot />
+    <h2 class="p-L red capitalize" v-if="playlist">{{ playlist.name }}</h2>
     <div v-if="playlist">
       <table>
         <thead>
@@ -23,7 +24,7 @@
           <tr v-for="track in playlist.tracks" :key="track.id" class="orange">
             <td>{{ track.title }}</td>
             <td>{{ track.duration }}</td>
-            <td>
+            <td class="actionTD">
               <button
                 class="bgRed white deleteTrackButton"
                 @click="this.delTrack(track.id, playlist.id)"
@@ -69,7 +70,8 @@ export default {
 </script>
 <style scoped>
 h2 {
-  margin-bottom: 30px;
+  margin-bottom: 70px;
+  text-align: center;
 }
 table {
   width: 100%;
@@ -85,5 +87,14 @@ button {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+.conainer {
+  padding: 2% 5%;
+}
+
+.actionTD {
+  display: flex;
+  width: auto;
+  justify-content: center;
 }
 </style>

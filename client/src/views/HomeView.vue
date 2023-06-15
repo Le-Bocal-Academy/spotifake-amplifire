@@ -1,7 +1,7 @@
 <template>
   <div>
     <Header>
-      <template v-slot:default>
+      <template v-slot:search>
         <form @submit.prevent="search" style="width: 40%">
           <input
             class="searchBarHome"
@@ -10,6 +10,9 @@
             v-model="searchValue"
           />
         </form>
+      </template>
+      <template v-slot:default>
+        <BlueButton text="Déconnexion" @click="logout" />
       </template>
     </Header>
 
@@ -36,6 +39,33 @@
         </RedButton>
       </div>
 
+      <!-- Modal add playlist -->
+      <Modal v-if="showPopupAddPlaylist" title="Ajouter une playlist">
+        <template v-slot:content>
+          <Fields
+            label="nom de la playlist"
+            fieldType="text"
+            @getValue="getPlaylistName"
+          />
+          <span>
+            <BlueButton
+              text="Annuler"
+              @click="
+                showPopupAddPlaylist = false;
+                this.newPlaylistName = null;
+              "
+            />
+            <RedButton
+              text="Ajouter"
+              @click="
+                this.createPlaylist();
+                showPopupAddPlaylist = false;
+              "
+            />
+          </span>
+        </template>
+      </Modal>
+
       <div class="playlistContainer">
         <div>
           <div class="headerPlaylist">
@@ -61,39 +91,18 @@
           <hr />
         </div>
 
-        <!-- Modal add playlist -->
-        <Modal v-if="showPopupAddPlaylist" title="Ajouter une playlist">
-          <template v-slot:content>
-            <Fields
-              label="nom de la playlist"
-              fieldType="text"
-              @getValue="getPlaylistName"
-            />
-            <span>
-              <BlueButton
-                text="Annuler"
-                @click="
-                  showPopupAddPlaylist = false;
-                  this.newPlaylistName = null;
-                "
-              />
-              <RedButton
-                text="Ajouter"
-                @click="
-                  this.createPlaylist();
-                  showPopupAddPlaylist = false;
-                "
-              />
-            </span>
-          </template>
-        </Modal>
-
         <Playlists
           :playlists="this.playlists"
           @clickedPlaylist="getPlaylistId"
           @display="displayPlaylistFunction"
+          v-if="!displayPlaylist"
         />
-        <Playlist v-if="displayPlaylist" :playlist="this.clickedPlaylist" />
+
+        <Playlist v-if="displayPlaylist" :playlist="this.clickedPlaylist">
+          <template v-slot:default>
+            <button @click="displayPlaylist = false">Retour</button>
+          </template>
+        </Playlist>
       </div>
     </div>
 
@@ -193,6 +202,10 @@ export default {
       this.clickedPlaylist = playlist;
     },
     async search() {
+      if (this.displaySearchResults == true && this.searchValue == "") {
+        this.displaySearchResults = false;
+        window.location.reload();
+      }
       this.displaySearchResults = true;
       console.log(this.searchValue);
       const response = await search.get(this.searchValue);

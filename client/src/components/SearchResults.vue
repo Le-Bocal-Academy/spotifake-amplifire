@@ -53,10 +53,7 @@
                 >
                   <i class="fa-solid fa-plus"></i>
                 </button>
-                <div
-                  v-if="displayMenu && selectedTrackId == track.id"
-                  class="playlistMenu"
-                >
+                <div v-if="displayMenu && selectedTrackId == track.id">
                   <p
                     v-for="playlist in this.playlists"
                     :key="playlist.id"
@@ -128,6 +125,8 @@ export default {
       console.log(response);
     },
     async addToPlaylist(trackId = null, playlistId = null) {
+      this.displayMenu = false;
+      this.selectedTrackId = null;
       const body = {
         playlist_id: playlistId,
         track_id: trackId,

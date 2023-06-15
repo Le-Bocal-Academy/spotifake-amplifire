@@ -45,16 +45,18 @@
         <tr v-for="track in album.tracks" :key="track.id" class="orange">
           <td>{{ track.title }}</td>
           <td>{{ track.duration }}</td>
-          <td class="actionTD">
-            <button class="red bgWhite" @click="playTrack(track.id)">
-              <i class="fa-solid fa-play"></i>
-            </button>
-            <button
-              class="bgRed white deleteTrackButton"
-              @click="displayFunction(track.id)"
-            >
-              <i class="fa-solid fa-plus"></i>
-            </button>
+          <td>
+            <div class="actionButton">
+              <button class="red bgWhite" @click="playTrack(track.id)">
+                <i class="fa-solid fa-play"></i>
+              </button>
+              <button
+                class="bgRed white deleteTrackButton"
+                @click="displayFunction(track.id)"
+              >
+                <i class="fa-solid fa-plus"></i>
+              </button>
+            </div>
             <div
               v-if="displayMenu && selectedTrackId == track.id"
               class="playlistMenu"
@@ -99,6 +101,8 @@ export default {
       console.log(response);
     },
     async addToPlaylist(trackId = null, playlistId = null) {
+      this.displayMenu = false;
+      this.selectedTrackId = null;
       const body = {
         playlist_id: playlistId,
         track_id: trackId,
@@ -165,8 +169,8 @@ button {
   flex-direction: column;
   gap: 60px;
 }
-.actionTD {
+.actionButton {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
 }
 </style>
