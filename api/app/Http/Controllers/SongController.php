@@ -51,8 +51,13 @@ class SongController extends Controller
 
       $albums = Album::where('title', 'like', "%$query%")->get()->map(function ($album) {
         $artist = Artist::findOrFail($album->artist_id);
+        $tracks = Track::where('album_id', $album->id)->get();
 
         $album->artist_name = $artist->name;
+        $album->album_tracks = $tracks->map(function ($track) {
+          unset($track->album_id);
+          return $track;
+        });
 
         unset($album->artist_id);
 
