@@ -21,7 +21,7 @@ class SongController extends Controller
       $fileName = $track->file;
 
       if (Storage::disk('s3')->exists($fileName)) {
-        return response(Storage::disk('s3')->get($fileName), 200)->header('Content-Type', 'audio/mpeg');
+        return response(Storage::disk('s3')->get($fileName), 200);
       }
     } catch (ModelNotFoundException $e) {
       return response()->json(['erreur' => 'La chanson n\'existe pas'], 404);
