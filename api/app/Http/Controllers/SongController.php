@@ -65,16 +65,21 @@ class SongController extends Controller
       });
 
       $artists = Artist::where('name', 'like', "%$query%")->get()->map(function ($artist) {
-        $artist->artist_tracks = collect();
-        $albums = Album::where('artist_id', $artist->id)->get();
-        foreach ($albums as $album) {
-          $tracks = Track::where('album_id', $album->id)->get()->map(function ($track) use ($album) {
-            $track->album_name = $album->title;
-            unset($track->album_id);
-            return $track;
-          });
-          $artist->artist_tracks = $artist->artist_tracks->merge($tracks);
-        }
+        $artist->artist_tracks = Track::whereHas('album.artist', function ($query) use ($artist) {
+          $query->where('id', $artist->id);
+        })->get()->map(function ($track) {
+          $album = Album::findOrFail($track->album_id);
+          $track->album_title = $album->title;
+          unset($track->album_id);
+          return $track;
+        });
+
+        $artist->artist_albums = Album::where('artist_id', $artist->id)->get();
+
+        $artist->artist_albums->map(function ($album) {
+          unset($album->artist_id);
+          return $album;
+        });
 
         return $artist;
       });
