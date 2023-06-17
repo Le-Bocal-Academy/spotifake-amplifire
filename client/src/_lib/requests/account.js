@@ -1,6 +1,19 @@
 import config from "@/config";
 
-const token = localStorage.getItem("token");
+const url = config.url;
+
+const defaultHeaders = {
+  Accept: "application/json",
+  "Content-Type": "application/json",
+};
+
+const authorizerHeaders = (token) => {
+  return {
+    Accept: "application/json",
+    "Content-Type": "application/json",
+    Authorization: "Bearer " + token,
+  };
+};
 
 export default {
   register: async (body) => {
@@ -15,13 +28,9 @@ export default {
 
     const options = {
       method: "post",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
+      headers: defaultHeaders,
       body: JSON.stringify(body),
     };
-    const url = config.url;
     const data = await fetch(url + "/register", options);
     return data;
   },
@@ -33,43 +42,17 @@ export default {
 
     const options = {
       method: "post",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
+      headers: defaultHeaders,
       body: JSON.stringify(body),
     };
-    const url = config.url;
     const data = await fetch(url + "/login", options);
-    const response = await data.json();
-    const token = response.token;
-    localStorage.setItem("token", token);
-    return response;
-    //   if (data.status === 200 && token) {
-    //     localStorage.setItem("token", token);
-    //     const options = {
-    //       method: "get",
-    //       headers: {
-    //         Accept: "application/json",
-    //         "Content-Type": "application/json",
-    //         Authorization: "Bearer " + token,
-    //       },
-    //     };
-    //     const data = await fetch(url + "/disk", options);
-    //     console.log(data);
-    //     this.$router.push("/home");
-    //   }
+    return data;
   },
-  logout: async () => {
+  logout: async (token) => {
     const options = {
       method: "get",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + token,
-      },
+      headers: authorizerHeaders(token),
     };
-    const url = config.url;
     const data = await fetch(url + "/logout", options);
     if (data.status === 200) {
       localStorage.clear();
@@ -83,16 +66,11 @@ export default {
 
     const options = {
       method: "post",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
+      headers: defaultHeaders,
       body: JSON.stringify(body),
     };
-    const url = config.url;
     const data = await fetch(url + "/forgotPassword", options);
-    const response = await data.json();
-    return response;
+    return data;
   },
   resetPassword: async (body) => {
     // body : {
@@ -101,18 +79,13 @@ export default {
     //   "password": "Querty456!",
     //   "password_confirmation": "Querty456!"
     // }
-
+    console.log(body);
     const options = {
       method: "post",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
+      headers: defaultHeaders,
       body: JSON.stringify(body),
     };
-    const url = config.url;
     const data = await fetch(url + "/resetPassword", options);
-    const response = await data.json();
-    return response;
+    return data;
   },
 };

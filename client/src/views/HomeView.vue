@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="this.authenticated">
     <Header>
       <template v-slot:search>
         <form @submit.prevent="search" style="width: 40%">
@@ -116,6 +116,7 @@ import Header from "@/components/Header.vue";
 import Footer from "@/components/Footer.vue";
 import RedButton from "@/components/UI/redButton.vue";
 import playlists from "@/_lib/requests/playlists.js";
+import account from "@/_lib/requests/account.js";
 import search from "@/_lib/requests/search.js";
 import Modal from "../components/UI/modal.vue";
 import Fields from "../components/UI/fields.vue";
@@ -141,6 +142,8 @@ export default {
   },
   data() {
     return {
+      token: null,
+      authenticated: false,
       audioUrl: "chemin_vers_le_fichier_audio.mp3",
       audioElement: null,
       placeholderContent:
@@ -164,21 +167,35 @@ export default {
     };
   },
   mounted() {
+    const token = localStorage.getItem("token");
+    this.token = token;
+    console.log(token);
+    this.checkAuth();
     this.getPlaylist();
     this.getUserInfos();
   },
   methods: {
+    checkAuth() {
+      if (!this.token) {
+        this.$router.push("/login");
+      } else {
+        this.authenticated = true;
+      }
+    },
     async getPlaylist() {
-      const response = await playlists.getAll();
+      console.log(this.token);
+      const response = await playlists.getAll(this.token);
       console.log(response.data);
       this.playlists = response.data;
+      if (this.playlists) {
+      }
     },
     async createPlaylist() {
       console.log(this.newPlaylistName);
       const body = {
         name: this.newPlaylistName,
       };
-      const response = await playlists.create(body);
+      const response = await playlists.create(body, this.token);
       window.location.reload();
       console.log(response);
     },
@@ -187,12 +204,8 @@ export default {
         playlist_id: this.playlistId,
         track_id: this.trackId,
       };
-      const response = await playlists.addTrack(body);
+      const response = await playlists.addTrack(body, this.token);
       console.log(response);
-    },
-
-    getPlaylistName(value) {
-      this.newPlaylistName = value;
     },
     getUserInfos() {
       this.nickname = localStorage.getItem("nickname");
@@ -208,18 +221,23 @@ export default {
       }
       this.displaySearchResults = true;
       console.log(this.searchValue);
-      const response = await search.get(this.searchValue);
+      const response = await search.get(this.searchValue, this.token);
       this.searchData = response.data;
       console.log(response.data);
     },
     getSearchDisplay(bool) {
       this.displaySearchResults = bool;
       window.location.reload();
-      // this.searchValue = "";
     },
     displayPlaylistFunction(bool) {
-      console.log(bool);
       this.displayPlaylist = bool;
+    },
+    async logout() {
+      const response = await account.logout(this.token);
+      if (response.status === 200) {
+        localStorage.clear();
+        this.$router.push("/login");
+      }
     },
   },
 };

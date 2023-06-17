@@ -88,7 +88,12 @@ export default {
       playlistName: null,
       showPopupRenamePlaylist: false,
       displayPlaylist: false,
+      token: null,
     };
+  },
+  mounted() {
+    const token = localStorage.getItem("token");
+    this.token = token;
   },
   methods: {
     sendPlaylistId(id) {
@@ -99,7 +104,7 @@ export default {
       const body = {
         playlist_id: id,
       };
-      const response = await playlists.delPlaylist(body);
+      const response = await playlists.delPlaylist(body, this.token);
       const playlistIndex = this.playlists.findIndex(
         (playlist) => playlist.id === id
       );
@@ -114,7 +119,7 @@ export default {
         playlist_id: this.selectedPlaylistId,
         name: this.playlistName,
       };
-      const response = await playlists.renamePlaylist(body);
+      const response = await playlists.renamePlaylist(body, this.token);
       // change name playlist ou recharge comp
       window.location.reload();
       this.displayMenu = false;

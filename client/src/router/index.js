@@ -3,6 +3,7 @@ import RegisterView from "../views/RegisterView.vue";
 import HomeView from "../views/HomeView.vue";
 import LoginView from "../views/LoginView.vue";
 import ForgotPasswordView from "../views/ForgotPasswordView.vue";
+import ResetPasswordView from "../views/ResetPasswordView.vue";
 
 const routes = [
   {
@@ -24,6 +25,11 @@ const routes = [
     path: "/forgotpassword",
     name: "forgotpassword",
     component: ForgotPasswordView,
+  },
+  {
+    path: "/reset-password",
+    name: "resetpassword",
+    component: ResetPasswordView,
   },
 ];
 

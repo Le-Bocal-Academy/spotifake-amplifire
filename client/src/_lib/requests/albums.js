@@ -1,9 +1,7 @@
 import config from "@/config";
 
-const token = localStorage.getItem("token");
-
 export default {
-  get: async (id) => {
+  get: async (id, token) => {
     const options = {
       method: "get",
       headers: {

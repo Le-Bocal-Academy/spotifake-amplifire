@@ -12,7 +12,7 @@
 <script>
 import Field from "./UI/fields.vue";
 import RedButton from "./UI/redButton.vue";
-import config from "../config.js";
+import account from "../_lib/requests/account";
 
 export default {
   components: {
@@ -29,18 +29,22 @@ export default {
       const body = {
         email: this.email,
       };
-      const options = {
-        method: "post",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
-      };
-      const url = config.url;
-      const data = await fetch(url + "/forgotPassword", options);
-      const response = await data.json();
-      console.log(response);
+      const response = await account.forgotPassword(body);
+      const responseJson = await response.json();
+      const errors = responseJson["errors"];
+      let errorMessage = "";
+      Object.keys(errors).forEach((key) => {
+        const errorMessages = errors[key];
+        errorMessage += `${key}: `;
+        errorMessages.forEach((message) => {
+          errorMessage += `${message}\n`;
+        });
+      });
+      if (response.status == 200) {
+        alert("Un email à été envoyé");
+      } else {
+        alert("Une erreur s'est produite. " + errorMessage);
+      }
     },
     getEmail(value) {
       this.email = value;

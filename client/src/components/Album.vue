@@ -80,6 +80,7 @@
 <script>
 import RedButton from "@/components/UI/redButton.vue";
 import playlists from "@/_lib/requests/playlists.js";
+
 export default {
   components: {
     RedButton,
@@ -92,12 +93,17 @@ export default {
     return {
       displayMenu: false,
       selectedTrackId: null,
+      token: null,
     };
+  },
+  mounted() {
+    const token = localStorage.getItem("token");
+    this.token = token;
   },
   methods: {
     async playTrack(trackId) {
       console.log("play");
-      const response = await tracks.get(trackId);
+      const response = await tracks.get(trackId, this.token);
       console.log(response);
     },
     async addToPlaylist(trackId = null, playlistId = null) {
@@ -107,7 +113,7 @@ export default {
         playlist_id: playlistId,
         track_id: trackId,
       };
-      const response = await playlists.addTrack(body);
+      const response = await playlists.addTrack(body, this.token);
       console.log(response);
     },
     displayFunction(trackId) {
