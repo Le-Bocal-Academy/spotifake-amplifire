@@ -1,13 +1,17 @@
 <template>
   <div>
-    <Header />
+    <Header>
+      <template v-slot:default>
+        <YellowButton text="Inscription" link="/" />
+      </template>
+    </Header>
     <Login />
     <Footer />
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
+import YellowButton from "../components/UI/yellowButton.vue";
 import Header from "@/components/Header.vue";
 import Footer from "@/components/Footer.vue";
 import Login from "@/components/Login.vue";
@@ -18,6 +22,7 @@ export default {
     Header,
     Login,
     Footer,
+    YellowButton,
   },
 };
 </script>

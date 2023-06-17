@@ -1,6 +1,10 @@
 <template>
   <div>
-    <Header />
+    <Header>
+      <template v-slot:default>
+        <BlueButton text="Connexion" link="/login" />
+      </template>
+    </Header>
     <div class="slogan">
       <h2 class="p-XXXL">Enflammez le rythme de votre vie !</h2>
       <p class="p-L">Souscrivez à notre offre unique.</p>
@@ -15,6 +19,7 @@
 import Header from "@/components/Header.vue";
 import Footer from "@/components/Footer.vue";
 import Register from "@/components/Register.vue";
+import BlueButton from "../components/UI/blueButton.vue";
 
 export default {
   name: "RegisterView",
@@ -22,6 +27,7 @@ export default {
     Header,
     Register,
     Footer,
+    BlueButton,
   },
 };
 </script>

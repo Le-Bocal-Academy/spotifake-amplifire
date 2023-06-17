@@ -3,12 +3,13 @@
     <div class="logo">
       <img alt="Logo" src="../assets/logo.png" />
     </div>
-    <slot></slot>
+    <slot name="search" />
     <div class="nav">
-      <YellowButton text="Inscription" link="/" />
+      <slot />
+      <!-- <YellowButton text="Inscription" link="/" />
       <BlueButton text="Connexion" link="/login" />
       <BlueButton text="Déconnexion" @click="logout" />
-      <SettingButton />
+      <SettingButton /> -->
     </div>
   </div>
 </template>

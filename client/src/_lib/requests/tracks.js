@@ -14,7 +14,6 @@ export default {
     };
     const url = config.url;
     const data = await fetch(url + "/track/" + id, options);
-    const response = await data.json();
-    return response;
+    return data;
   },
 };

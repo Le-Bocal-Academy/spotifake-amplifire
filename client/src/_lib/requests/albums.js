@@ -11,7 +11,6 @@ export default {
         "Content-Type": "application/json",
         Authorization: "Bearer " + token,
       },
-      body: JSON.stringify(body),
     };
     const url = config.url;
     const data = await fetch(url + "/album/" + id, options);
