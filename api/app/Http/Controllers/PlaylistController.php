@@ -94,7 +94,7 @@ class PlaylistController extends Controller
       }
 
       if ($playlistTrack === []) {
-        return response(['message' => 'La playlist n\'existe pas'], 409);
+        return response(['message' => 'La playlist n\'existe pas'], 404);
       }
 
       return response(['message' => 'Le titre a été ajouté à la playlist'], 201);
