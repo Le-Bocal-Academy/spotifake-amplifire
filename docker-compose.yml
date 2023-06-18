@@ -1,6 +1,40 @@
 version: "3.8"
 
 services:
+  mysql_DB:
+    container_name: mysql_DB
+    image: mysql:latest
+    env_file:
+      - .env
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - db_data:/var/lib/mysql
+    ports:
+      - 3306:3306
+    networks:
+      - app-network
+
+  phpmyadmin:
+    container_name: phpmyadmin
+    image: phpmyadmin/phpmyadmin:latest
+    env_file:
+      - .env
+    links:
+      - mysql_DB:db
+    ports:
+      - 8081:80
+    environment:
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      PMA_HOST: ${PMA_HOST}
+    networks:
+      - app-network
+
   client:
     container_name: client
     build:
@@ -22,49 +56,16 @@ services:
       context: ./api
       dockerfile: Dockerfile
     volumes:
-      - ./api:/var/www/html
+      - ./api:/var/www/app
     ports:
       - 8000:80
+    command: /bin/bash -c "sleep 20 && php artisan migrate && php artisan data:import && apachectl -D FOREGROUND"
     env_file:
       - .env
     networks:
       - app-network
     depends_on:
       - mysql_DB
-
-  mysql_DB:
-    container_name: mysql_DB
-    image: mysql:latest
-    env_file:
-      - .env
-    environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-    volumes:
-      - db_data:/var/lib/mysql
-    ports:
-      - 3306:3306
-    networks:
-      - app-network
-
-  phpmyadmin:
-    container_name: phpmyadmin
-    image: phpmyadmin/phpmyadmin:latest
-    env_file:
-      - .env
-    links:
-      - mysql_DB:db
-    ports:
-      - 8081:80
-    environment:
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      PMA_HOST: ${PMA_HOST}
-    networks:
-      - app-network
 
 volumes:
   db_data:

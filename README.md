@@ -1,5 +1,3 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-24ddc0f5d75046c5622901739e7c5dd533143b0c8e959d652212380cedb1ea36.svg)](https://classroom.github.com/a/3UDHvqMB)
-
 # Amplifire - Readme
 
 ## Langages / Frameworks et leurs versions
@@ -11,12 +9,10 @@ L'application Amplifire est développée en utilisant les langages et frameworks
 - Vue.js (version 3.2.13)
 - MySQL
 
-
 ## Commandes
 Pour exécuter l'application, utilisez les commandes suivantes :
 
 - docker-compose up --build
-
 
 ## Sécurité de l'Application
 L'application Amplifire met en œuvre plusieurs mesures de sécurité pour protéger les données des utilisateurs et garantir une expérience sécurisée. Ces mesures comprennent :
