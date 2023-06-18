@@ -76,12 +76,6 @@
               <div class="underlign bgYellow"></div>
             </div>
             <div class="searchPlaylistComponent">
-              <!-- <input
-                type="text"
-                class="searchBar"
-                :placeholder="''"
-                v-html="this.placeholderContent"
-              /> -->
               <button
                 class="bgRed white p-M addButton"
                 @click="showPopupAddPlaylist = true"

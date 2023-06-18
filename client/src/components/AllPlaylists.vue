@@ -5,6 +5,7 @@
       v-for="playlist in this.playlists"
       :key="playlist.id"
     >
+      <!-- icone de la playlist -->
       <div
         class="playlistIcon"
         @click="
@@ -14,6 +15,7 @@
       >
         <i class="fa-solid fa-play p-M"></i>
       </div>
+      <!-- infos de la playlist -->
       <div class="playlistNameAndMenu">
         <p>{{ playlist.name }}</p>
         <span
@@ -28,6 +30,7 @@
         </span>
       </div>
 
+      <!-- Menu -->
       <div
         v-if="displayMenu && selectedPlaylistId == playlist.id"
         class="playlistMenu"
@@ -45,6 +48,7 @@
       </div>
     </div>
 
+    <!-- modal du formulaire pour entrer le nom de la nouvelle playlist -->
     <Modal v-if="showPopupRenamePlaylist" title="Renommer la playlist">
       <template v-slot:content>
         <Fields
@@ -97,6 +101,7 @@ export default {
   },
   methods: {
     sendPlaylistId(id) {
+      // fonction pour afficher le detail de la playlist selectionnée
       this.$emit("clickedPlaylist", id);
       this.$emit("display", this.displayPlaylist);
     },
@@ -105,6 +110,7 @@ export default {
         playlist_id: id,
       };
       const response = await playlists.delPlaylist(body, this.token);
+      // effacer la playlist de la variable playlist en attendant un reload
       const playlistIndex = this.playlists.findIndex(
         (playlist) => playlist.id === id
       );
@@ -120,13 +126,11 @@ export default {
         name: this.playlistName,
       };
       const response = await playlists.renamePlaylist(body, this.token);
-      // change name playlist ou recharge comp
+      // reload de la page pour afficher les changements apportés
       window.location.reload();
-      this.displayMenu = false;
-      this.showPopupRenamePlaylist = false;
-      console.log(response);
     },
     getPlaylistName(value) {
+      // récuperer la valeur envoyée du formulaire
       this.playlistName = value;
     },
   },

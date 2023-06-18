@@ -63,14 +63,13 @@ export default {
         track_id: trackId,
       };
       const response = await playlists.delTrack(body, this.token);
-      console.log(response.status);
+      // effacer la piste audio de la variable playlist en attendant un reload
       const trackIndex = this.playlist.tracks.findIndex(
         (track) => track.id === trackId
       );
       if (trackIndex !== -1) {
         this.playlist.tracks.splice(trackIndex, 1);
       }
-      console.log(response);
     },
   },
 };

@@ -30,6 +30,7 @@ export default {
         email: this.email,
       };
       const response = await account.forgotPassword(body);
+      // initialisation du message d'erreur
       const responseJson = await response.json();
       const errors = responseJson["errors"];
       let errorMessage = "";
@@ -40,6 +41,7 @@ export default {
           errorMessage += `${message}\n`;
         });
       });
+      // gestion des erreurs
       if (response.status == 200) {
         alert("Un email à été envoyé");
       } else {
@@ -47,6 +49,7 @@ export default {
       }
     },
     getEmail(value) {
+      // récupération de la valeur du formulaire
       this.email = value;
     },
   },

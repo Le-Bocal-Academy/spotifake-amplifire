@@ -54,7 +54,7 @@
 <script>
 import Field from "./UI/fields.vue";
 import RedButton from "./UI/redButton.vue";
-import config from "../config.js";
+import account from "../_lib/requests/account";
 
 export default {
   components: {
@@ -81,43 +81,33 @@ export default {
         password: this.password,
         password_confirmation: this.password_confirmation,
       };
-      const options = {
-        method: "post",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
-      };
-      const url = config.url;
-      const data = await fetch(url + "/register", options);
+      const data = await account.register(body, token);
       if (data.status === 201) {
-        (this.nickname = ""),
-          (this.firstname = ""),
-          (this.lastname = ""),
-          (this.email = ""),
-          (this.password = ""),
-          (this.password_confirmation = ""),
-          // afficher une modale pour dire que l'inscription est effectuée puis un bouton pour se connecter
-          this.$router.push("/login");
+        this.$router.push("/login");
       }
     },
     getNickname(value) {
+      // récupérer la valeur nickname du formulaire
       this.nickname = value;
     },
     getLastname(value) {
+      // récupérer la valeur lastname du formulaire
       this.lastname = value;
     },
     getFirstname(value) {
+      // récupérer la valeur firstname du formulaire
       this.firstname = value;
     },
     getEmail(value) {
+      // récupérer la valeur email du formulaire
       this.email = value;
     },
     getPassword(value) {
+      // récupérer la valeur password du formulaire
       this.password = value;
     },
     getPassword_confirmation(value) {
+      // récupérer la valeur confirmation du password du formulaire
       this.password_confirmation = value;
     },
   },

@@ -38,6 +38,7 @@ export default {
   },
   methods: {
     async resetPassword() {
+      // récupérer la valeur du token inscrit dans l'url
       const currentUrl = new URL(window.location.href);
       const params = new URLSearchParams(currentUrl.search);
       let token = "";
@@ -51,6 +52,7 @@ export default {
         password_confirmation: this.confirmPassword,
       };
       const response = await account.resetPassword(body);
+      // initialisation du message d'erreur
       const responseJson = await response.json();
       const errors = responseJson["errors"];
       let errorMessage = "";
@@ -61,6 +63,7 @@ export default {
           errorMessage += `${message}\n`;
         });
       });
+      // gestion des erreurs
       if (response.status == 200) {
         alert("la réinitialisation de votre mot de passe à été effectué");
         this.$router.push("/login");
@@ -69,12 +72,15 @@ export default {
       }
     },
     getEmail(value) {
+      // récupérer la valeur email du formulaire
       this.email = value;
     },
     getNewPassword(value) {
+      // récupérer la valeur password du formulaire
       this.newPassword = value;
     },
     getConfirmationNewPasword(value) {
+      // récupérer la valeur confirmation du password du formulaire
       this.confirmPassword = value;
     },
   },

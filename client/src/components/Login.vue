@@ -50,6 +50,7 @@ export default {
       const response = await account.login(body);
       const responseJson = await response.json();
 
+      // gestion des erreurs + enregitrement des infos du user dans le local storage
       if (response.status == 200) {
         const data = responseJson.data;
         localStorage.setItem("token", data.token);
@@ -65,9 +66,11 @@ export default {
       }
     },
     getEmail(value) {
+      // recupération de la valeur email entrée dans le formulaire
       this.email = value;
     },
     getPassword(value) {
+      // recupération de la valeur password entrée dans le formulaire
       this.password = value;
     },
   },
