@@ -33,6 +33,7 @@ class AuthController extends Controller
                     'regex:/[@$!%*#?&]/', // Le mot de passe doit comporter au moins un caractère spécial
                 ],
             ], [
+                // Messages d'erreur personnalisés pour chaque règle de validation
                 'nickname.required' => 'Le pseudo est requis',
                 'nickname.unique' => 'Le pseudo n\'est pas valide',
                 'nickname.max' => 'Le pseudo ne peut pas dépasser 20 caractères',
@@ -52,10 +53,12 @@ class AuthController extends Controller
 
             $validatedData['password'] = Hash::make($request->password);
 
+            // Création du compte utilisateur en utilisant les données validées
             Account::create($validatedData);
 
             $account = Account::where('email', $validatedData['email'])->first();
 
+            // Envoyer un mail de confirmation
             $account->sendMailAdressConfirmationNotification($account->id);
 
             return response(['message' => 'Compte créé, vous allez recevoir un mail pour activer votre compte.'], 201);
@@ -81,12 +84,14 @@ class AuthController extends Controller
             $account = Account::where('email', $validatedData['email'])->first();
 
             if (!$account || !Hash::check($validatedData['password'], $account->password)) {
+                // Vérification si le compte utilisateur n'existe pas ou si le mot de passe fourni ne correspond pas au mot de passe hashé stocké dans la base de données
                 return response(['erreur' => 'Email ou mot de passe incorrect'], 400);
             }
 
             unset($account->password);
 
             if (!$account->email_verified_at) {
+                // Vérification si l'e-mail de l'utilisateur n'a pas encore été vérifié et si le compte n'est pas activé
                 return response(['erreur' => 'Votre compte n\'est pas encore activé. Veuillez vérifier vos mails.'], 400);
             }
 
@@ -110,8 +115,10 @@ class AuthController extends Controller
         try {
             $user = $request->user();
 
+            // Récupération du jeton d'accès actuel de l'utilisateur
             $currentToken = $user->currentAccessToken();
 
+            // Suppression du jeton d'accès de l'utilisateur
             $user->tokens()->where('id', $currentToken->id)->delete();
 
             return response(['message' => 'Utilisateur déconnecté'], 200);
@@ -126,13 +133,19 @@ class AuthController extends Controller
         try {
             $request->validate(['email' => 'required|email']);
 
+            // Envoi du lien de réinitialisation du mot de passe à l'adresse email fournie
             $status = Password::sendResetLink(
                 $request->only('email')
             );
 
-            return $status === Password::RESET_LINK_SENT
-                ? response()->json(['status' => 'Un email a été envoyé'], 200)
-                : response()->json(['email' => [__($status)]], 400);
+            // Vérification du statut de l'envoi du lien de réinitialisation
+            if ($status === Password::RESET_LINK_SENT) {
+                // Si le lien de réinitialisation du mot de passe a été envoyé avec succès
+                return response()->json(['status' => 'Un email a été envoyé'], 200);
+            } else {
+                // Si une erreur s'est produite lors de l'envoi du lien de réinitialisation
+                return response()->json(['email' => [__($status)]], 400);
+            }
         } catch (ValidationException $exception) {
 
             return response(['errors' => $exception->errors()], 422);
@@ -159,9 +172,12 @@ class AuthController extends Controller
                 ],
             ]);
 
+            // Réinitialisation du mot de passe en utilisant la méthode `reset` de la classe `Password`
             $status = Password::reset(
                 $request->only('email', 'password', 'password_confirmation', 'token'),
                 function ($user, $password) {
+
+                    // Mise à jour du mot de passe de l'utilisateur avec le nouveau mot de passe hashé
                     $user->forceFill([
                         'password' => Hash::make($password)
                     ]);
@@ -172,9 +188,13 @@ class AuthController extends Controller
                 }
             );
 
-            return $status === Password::PASSWORD_RESET
-                ? response()->json(['message' => 'Le mot de passe a été modifié' . $request->email], 200)
-                : response()->json(['erreur' => [__($status)]], 400);
+            if ($status === Password::PASSWORD_RESET) {
+                // Si le mot de passe a été réinitialisé avec succès
+                return response()->json(['message' => 'Le mot de passe a été modifié pour l\'email ' . $request->email], 200);
+            } else {
+                // Si une erreur s'est produite lors de la réinitialisation du mot de passe
+                return response()->json(['erreur' => [__($status)]], 400);
+            }
         } catch (ValidationException $exception) {
 
             return response(['errors' => $exception->errors()], 422);
@@ -190,17 +210,18 @@ class AuthController extends Controller
             $account = Account::find($id);
 
             if (!$account) {
-                return response(['erreur' => 'Utilisateur non trouvé'], 404);
+                return response(['erreur' => 'l\'tilisateur n\'existe pas'], 404);
             }
 
             if ($account->email_verified_at) {
                 return response(['erreur' => 'Votre compte est déjà activé'], 400);
             }
 
+            // Marquage de la date de vérification de l'email à l'heure actuelle
             $account->email_verified_at = now();
             $account->save();
 
-            // return response()->json(['message' => 'Votre compte a été activé avec succès'], 200);
+            // Redirection vers la page de connexion
             return redirect()->to(config('app.url') . ":8080/login");
         } catch (Exception $e) {
             Log::error($e);
@@ -215,13 +236,14 @@ class AuthController extends Controller
             $account = Account::find($id);
 
             if (!$account) {
-                return response(['erreur' => 'Utilisateur non trouvé'], 404);
+                return response(['erreur' => 'l\'tilisateur n\'existe pas'], 404);
             }
 
             if ($account->email_verified_at) {
                 return response(['erreur' => 'Votre compte est déjà activé'], 400);
             }
 
+            // Renvoi d'un mail de confirmation
             $account->sendMailAdressConfirmationNotification($account->id);
 
             return response()->json(['message' => 'Un email a été envoyé à l\'adresse ' . $account->email], 200);

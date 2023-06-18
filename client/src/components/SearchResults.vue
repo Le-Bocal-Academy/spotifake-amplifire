@@ -75,7 +75,7 @@
                     v-for="playlist in this.playlists"
                     :key="playlist.id"
                     class="red"
-                    style="cursor: pointer"
+                    style="cursor: pointer; text-align: center; padding: 2px"
                     @click="addToPlaylist(track.id, playlist.id)"
                   >
                     {{ playlist.name }}
