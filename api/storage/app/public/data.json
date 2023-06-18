@@ -1,0 +1,131 @@
+{
+  "albums": [
+    {
+      "title": "Lemon Music",
+      "artist": "Lemon Music Studio",
+      "year": "2015",
+      "description": "Lemon Music Studio's first album.",
+      "styles": [
+        "pop"
+      ],
+      "tracks": [
+        {
+          "title": "Leva Eternity",
+          "duration": "02:25",
+          "file": "leva-eternity-149473.mp3"
+        },
+        {
+          "title": "Sunshine",
+          "duration": "02:19",
+          "file": "sunshine-108600.mp3"
+        },
+        {
+          "title": "To meet the light",
+          "duration": "02:12",
+          "file": "to-meet-the-light-108601.mp3"
+        },
+        {
+          "title": "Tomorrow",
+          "duration": "02:24",
+          "file": "tomorrow-114848.mp3"
+        }
+      ]
+    },
+    {
+      "title": "Summer Sounds",
+      "artist": "Music Unlimited",
+      "year": "2020",
+      "description": "This album is a collection of electro-pop summer sounds from Music Unlimited. It is a great album to listen to while working or studying.",
+      "styles": [
+        "pop",
+        "electro"
+      ],
+      "tracks": [
+        {
+          "title": "Summer Night",
+          "duration": "02:40",
+          "file": "summer-nights-tropical-house-music-121570.mp3"
+        },
+        {
+          "title": "Tropical Summer",
+          "duration": "02:36",
+          "file": "tropical-summer-music-112842.mp3"
+        }
+      ]
+    },
+    {
+      "title": "Alex Grohl Greatest Hits",
+      "artist": "Alex Grohl",
+      "year": "2022",
+      "description": "Greatest hits from Alex Grohl.",
+      "styles": [
+        "rock"
+      ],
+      "tracks": [
+        {
+          "title": "Energetic",
+          "duration": "02:24",
+          "file": "energetic-indie-rock-jump-112179.mp3"
+        },
+        {
+          "title": "Inspiring",
+          "duration": "02:46",
+          "file": "inspiring-motivational-rock-inspire-mesenses-111448.mp3"
+        },
+        {
+          "title": "Stomping",
+          "duration": "01:59",
+          "file": "stomping-rock-four-shots-111444.mp3"
+        }
+      ]
+    },
+    {
+      "title": "Sport Big Beat",
+      "artist": "Soul Prod Music",
+      "year": "2019",
+      "description": "Sport Big Beat is an energetic single from Soul Prod Music. It is a great album to listen to while working out or playing sports.",
+      "styles": [
+        "electro"
+      ],
+      "tracks": [
+        {
+          "title": "Sport Big Beat",
+          "duration": "04:48",
+          "file": "sport-amp-big-beat-rock-trailer-4-ver-141001.mp3"
+        }
+      ]
+    },
+    {
+      "title": "The art of synth",
+      "artist": "Lucadi Alessandro",
+      "year": "2020",
+      "description": "This single is the one of the best synthwave tracks.",
+      "styles": [
+        "electro"
+      ],
+      "tracks": [
+        {
+          "title": "Sport Big Beat",
+          "duration": "04:48",
+          "file": "sport-amp-big-beat-rock-trailer-4-ver-141001.mp3"
+        }
+      ]
+    },
+    {
+      "title": "Hard Big Beat",
+      "artist": "Qube Sounds",
+      "year": "2020",
+      "description": "An electro single from Qube Sounds.",
+      "styles": [
+        "electro"
+      ],
+      "tracks": [
+        {
+          "title": "Hard Big Beat",
+          "duration": "01:11",
+          "file": "hard-big-beat-action-amp-sport-131292.mp3"
+        }
+      ]
+    }
+  ]
+}
