@@ -38,7 +38,7 @@
           </thead>
 
           <tbody>
-            <tr v-for="track in dataParsed.tracks" :key="track.title">
+            <tr v-for="track in data.tracks" :key="track.title">
               <td>{{ track.title }}</td>
               <td>{{ track.artist_name }}</td>
               <td>{{ track.album_title }}</td>
@@ -73,7 +73,7 @@
       <section class="albumsSection">
         <h2 class="p-L yellow">Albums</h2>
         <div class="album-list">
-          <div v-for="album in dataParsed.albums" :key="album.id" class="album">
+          <div v-for="album in data.albums" :key="album.id" class="album">
             <div class="albumIcon" @click="getAlbum(album.id)">
               <i class="fa-solid fa-compact-disc p-XXL"></i>
             </div>
@@ -119,7 +119,6 @@ export default {
   mounted() {
     const token = localStorage.getItem("token");
     this.token = token;
-    this.parseResult();
   },
   methods: {
     async getAlbum(id) {
@@ -150,43 +149,6 @@ export default {
     },
     sendCloseSearch() {
       this.$emit("getEvent", false);
-    },
-    parseResult() {
-      let results = {
-        tracks: [],
-        albums: [],
-      };
-      if (this.data.tracks) {
-        this.data.tracks.forEach((track) => {
-          results["tracks"].push(track);
-        });
-      }
-      if (this.data.albums) {
-        this.data.albums.forEach((album) => {
-          results["albums"].push(album);
-        });
-      }
-      if (this.data.artists) {
-        this.data.artists.artist_tracks.forEach((track) => {
-          results["tracks"].push(track);
-        });
-      }
-      if (this.data.artists) {
-        this.data.artists.artist_albums.forEach((album) => {
-          results["albums"].push(album);
-        });
-      }
-      if (this.data.styles) {
-        this.data.styles.albums.forEach((album) => {
-          results["albums"].push(album);
-        });
-      }
-
-      results["tracks"] = [...new Set(results["tracks"])];
-      results["albums"] = [...new Set(results["albums"])];
-
-      this.dataParsed = results;
-      console.log(this.dataParsed);
     },
   },
 };

@@ -60,18 +60,8 @@ export default {
         localStorage.setItem("email", data.email);
         this.$router.push("/home");
       } else {
-        const errors = responseJson["errors"];
-        let errorMessage = "";
-        if (errors) {
-          Object.keys(errors).forEach((key) => {
-            const errorMessages = errors[key];
-            errorMessage += `${key}: `;
-            errorMessages.forEach((message) => {
-              errorMessage += `${message}\n`;
-            });
-          });
-        }
-        alert("Une erreur s'est produite, veuillez réésayer. " + errorMessage);
+        let errorMessage = responseJson["erreur"];
+        alert("Une erreur s'est produite. " + errorMessage);
       }
     },
     getEmail(value) {

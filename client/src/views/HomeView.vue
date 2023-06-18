@@ -222,8 +222,47 @@ export default {
       this.displaySearchResults = true;
       console.log(this.searchValue);
       const response = await search.get(this.searchValue, this.token);
-      this.searchData = response.data;
+
       console.log(response.data);
+      this.searchData = this.parseResult(response.data);
+    },
+    parseResult(data) {
+      let results = {
+        tracks: [],
+        albums: [],
+      };
+      if (data.tracks) {
+        data.tracks.forEach((track) => {
+          results["tracks"].push(track);
+        });
+      }
+      if (data.albums.length > 0) {
+        data.albums.forEach((album) => {
+          results["albums"].push(album);
+        });
+      }
+      if (data.artists.length > 0 && data.artists.artist_tracks) {
+        data.artists.artist_tracks.forEach((track) => {
+          results["tracks"].push(track);
+        });
+      }
+      if (data.artists.length > 0 && data.artists.artist_albums) {
+        this.data.artists.artist_albums.forEach((album) => {
+          results["albums"].push(album);
+        });
+      }
+      if (data.styles.length > 0 && data.styles[0].albums) {
+        data.styles[0].albums.forEach((album) => {
+          results["albums"].push(album);
+        });
+      }
+
+      console.log(results);
+
+      results["tracks"] = [...new Set(results["tracks"])];
+      results["albums"] = [...new Set(results["albums"])];
+
+      return results;
     },
     getSearchDisplay(bool) {
       this.displaySearchResults = bool;
