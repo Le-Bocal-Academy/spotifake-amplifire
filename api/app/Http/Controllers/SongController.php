@@ -21,7 +21,7 @@ class SongController extends Controller
       $fileName = $track->file;
 
       if (Storage::disk('s3')->exists($fileName)) {
-        return response(Storage::disk('s3')->get($fileName), 200)->header('Content-Type', 'audio/mpeg');
+        return response(Storage::disk('s3')->get($fileName), 200);
       }
     } catch (ModelNotFoundException $e) {
       return response()->json(['erreur' => 'La chanson n\'existe pas'], 404);
@@ -51,6 +51,7 @@ class SongController extends Controller
 
       $albums = Album::where('title', 'like', "%$query%")->get()->map(function ($album) {
         $artist = Artist::findOrFail($album->artist_id);
+        unset($album->year, $album->description);
 
         $album->artist_name = $artist->name;
 
@@ -59,7 +60,24 @@ class SongController extends Controller
         return $album;
       });
 
-      $artists = Artist::where('name', 'like', "%$query%")->get();
+      $artists = Artist::where('name', 'like', "%$query%")->get()->map(function ($artist) {
+        $artist->artist_tracks = Track::whereHas('album.artist', function ($query) use ($artist) {
+          $query->where('id', $artist->id);
+        })->get()->map(function ($track) {
+          $album = Album::findOrFail($track->album_id);
+          $track->album_title = $album->title;
+          unset($track->album_id);
+          return $track;
+        });
+
+        $artist->artist_albums = Album::where('artist_id', $artist->id)->get()->map(function ($album) use ($artist) {
+          $album->artist_name = $artist->name;
+          unset($album->artist_id);
+          return $album;
+        });
+
+        return $artist;
+      });
 
       $styles = Style::where('style', 'like', "%$query%")->get()->map(function ($style) {
         $style->albums = Album::whereHas('styles', function ($query) use ($style) {

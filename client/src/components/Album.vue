@@ -80,7 +80,6 @@
 <script>
 import RedButton from "@/components/UI/redButton.vue";
 import playlists from "@/_lib/requests/playlists.js";
-
 export default {
   components: {
     RedButton,

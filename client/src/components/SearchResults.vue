@@ -126,6 +126,13 @@ export default {
       this.clickedAlbum = response.data;
       this.showAlbum = true;
       console.log(response);
+      console.log(response.url);
+
+      const audioplayer = this.$refs.audioplayer;
+      audioplayer.src = response.url;
+      audioplayer.play();
+
+      console.log(this.trackplay);
     },
     async playTrack(trackId) {
       const response = await tracks.get(trackId, this.token);
