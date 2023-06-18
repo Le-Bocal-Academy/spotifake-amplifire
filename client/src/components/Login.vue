@@ -62,7 +62,7 @@ export default {
         localStorage.setItem("email", data.email);
         this.$router.push("/home");
       } else {
-        const errorMessage = errors.constructor(responseJson);
+        const errorMessage = responseJson["erreur"];
         alert("Une erreur s'est produite. " + errorMessage);
       }
     },
