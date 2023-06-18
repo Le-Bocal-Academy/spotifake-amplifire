@@ -87,7 +87,7 @@ export default {
       // initialisation du message d'erreur
       const responseJson = await response.json();
       const errorMessage = errors.constructor(responseJson);
-      if (data.status === 201) {
+      if (response.status === 201) {
         this.$router.push("/login");
       } else {
         alert("Une erreur s'est produite. " + errorMessage);

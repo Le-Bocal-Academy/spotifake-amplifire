@@ -127,24 +127,17 @@ export default {
       ) {
         // recupération de
         const response = await tracks.get(trackId, this.token);
-        // initialisation du message d'erreur
-        const responseJson = await data.json();
-        const errorMessage = errors.constructor(responseJson);
-        if (response.status == 200) {
-          const data = await response.blob();
-          const audioUrl = URL.createObjectURL(data);
-          const audioInfos = {
-            url: audioUrl,
-            trackId: trackId,
-            trackTitle: trackTitle,
-            trackArtist: trackArtist,
-            stop: false,
-          };
-          // envoie des donées utiles au composant parent
-          this.sendAudioInfos(audioInfos);
-        } else {
-          alert("Une erreur s'est produite. " + errorMessage);
-        }
+        const data = await response.blob();
+        const audioUrl = URL.createObjectURL(data);
+        const audioInfos = {
+          url: audioUrl,
+          trackId: trackId,
+          trackTitle: trackTitle,
+          trackArtist: trackArtist,
+          stop: false,
+        };
+        // envoie des donées utiles au composant parent
+        this.sendAudioInfos(audioInfos);
       }
       // si la piste séléctionée à déjà été chargée et qu'elle est sur pause
       else if (
@@ -173,13 +166,6 @@ export default {
         track_id: trackId,
       };
       const response = await playlists.addTrack(body, this.token);
-
-      // gestion des erreurs
-      const responseJson = await response.json();
-      const errorMessage = errors.constructor(responseJson);
-      if (response.status != 200) {
-        alert("Une erreur s'est produite. " + errorMessage);
-      }
     },
     displayFunction(trackId) {
       /**

@@ -201,11 +201,6 @@ export default {
     this.getPlaylist();
     this.getUserInfos();
   },
-  updated() {
-    this.$nextTick(() => {
-      this.audioPlayerPosition();
-    });
-  },
   methods: {
     checkAuth() {
       if (!this.token) {
@@ -216,30 +211,15 @@ export default {
     },
     async getPlaylist() {
       const response = await playlists.getAll(this.token);
-      // gestion des erreurs
-      const responseJson = await response.json();
-      const errorMessage = errors.constructor(responseJson);
-
-      if (response.status == 200) {
-        this.playlists = response.data;
-      } else {
-        alert("Une erreur s'est produite. " + errorMessage);
-      }
+      this.playlists = response.data;
     },
     async createPlaylist() {
       const body = {
         name: this.newPlaylistName,
       };
+      console.log(this.newPlaylistName);
       const response = await playlists.create(body, this.token);
-      // gestion des erreurs
-      const responseJson = await response.json();
-      const errorMessage = errors.constructor(responseJson);
-
-      if (response.status == 200) {
-        window.location.reload();
-      } else {
-        alert("Une erreur s'est produite. " + errorMessage);
-      }
+      window.location.reload();
     },
     async addTrack() {
       const body = {
@@ -247,13 +227,7 @@ export default {
         track_id: this.trackId,
       };
       const response = await playlists.addTrack(body, this.token);
-      // gestion des erreurs
-      const responseJson = await response.json();
-      const errorMessage = errors.constructor(responseJson);
-
-      if (response.status != 200) {
-        alert("Une erreur s'est produite. " + errorMessage);
-      }
+      alert("Une erreur s'est produite. ");
     },
     getUserInfos() {
       this.nickname = localStorage.getItem("nickname");
@@ -262,6 +236,9 @@ export default {
       const playlist = this.playlists.find((playlist) => playlist.id == id);
       this.clickedPlaylist = playlist;
     },
+    getPlaylistName(value) {
+      this.newPlaylistName = value;
+    },
     async search() {
       if (this.displaySearchResults == true && this.searchValue == "") {
         this.displaySearchResults = false;
@@ -269,15 +246,7 @@ export default {
       }
       this.displaySearchResults = true;
       const response = await search.get(this.searchValue, this.token);
-      // gestion des erreurs
-      const responseJson = await response.json();
-      const errorMessage = errors.constructor(responseJson);
-
-      if (response.status == 200) {
-        this.searchData = this.parseResult(response.data);
-      } else {
-        alert("Une erreur s'est produite. " + errorMessage);
-      }
+      this.searchData = this.parseResult(response.data);
     },
     parseResult(data) {
       let results = {
@@ -353,16 +322,8 @@ export default {
     },
     async logout() {
       const response = await account.logout(this.token);
-      // gestion des erreurs
-      const responseJson = await response.json();
-      const errorMessage = errors.constructor(responseJson);
-
-      if (response.status == 200) {
-        localStorage.clear();
-        this.$router.push("/login");
-      } else {
-        alert("Une erreur s'est produite. " + errorMessage);
-      }
+      localStorage.clear();
+      this.$router.push("/login");
     },
     playAudio(audioInfos) {
       this.trackControlId = audioInfos.trackId;

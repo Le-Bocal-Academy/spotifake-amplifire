@@ -113,20 +113,14 @@ export default {
         playlist_id: id,
       };
       const response = await playlists.delPlaylist(body, this.token);
-      const responseJson = await response.json();
-      const errorMessage = errors.constructor(responseJson);
-      if (response.status == 200) {
-        // effacer la playlist de la variable playlist en attendant un reload
-        const playlistIndex = this.playlists.findIndex(
-          (playlist) => playlist.id === id
-        );
-        if (playlistIndex !== -1) {
-          this.playlists.splice(playlistIndex, 1);
-        }
-        this.displayMenu = false;
-      } else {
-        alert("Une erreur s'est produite. " + errorMessage);
+      // effacer la playlist de la variable playlist en attendant un reload
+      const playlistIndex = this.playlists.findIndex(
+        (playlist) => playlist.id === id
+      );
+      if (playlistIndex !== -1) {
+        this.playlists.splice(playlistIndex, 1);
       }
+      this.displayMenu = false;
     },
     async renamePlaylist() {
       const body = {
@@ -134,16 +128,8 @@ export default {
         name: this.playlistName,
       };
       const response = await playlists.renamePlaylist(body, this.token);
-      // gestion des erreurs
-      const responseJson = await response.json();
-      const errorMessage = errors.constructor(responseJson);
-
-      if (response.status == 200) {
-        // reload de la page pour afficher les changements apportés
-        window.location.reload();
-      } else {
-        alert("Une erreur s'est produite. " + errorMessage);
-      }
+      // reload de la page pour afficher les changements apportés
+      window.location.reload();
     },
     getPlaylistName(value) {
       // récuperer la valeur envoyée du formulaire

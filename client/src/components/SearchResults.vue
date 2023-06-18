@@ -144,16 +144,8 @@ export default {
   methods: {
     async getAlbum(id) {
       const response = await albums.get(id, this.token);
-      // gestion des erreurs
-      const responseJson = await response.json();
-      const errorMessage = errors.constructor(responseJson);
-
-      if (response.status == 200) {
-        this.clickedAlbum = response.data;
-        this.showAlbum = true;
-      } else {
-        alert("Une erreur s'est produite. " + errorMessage);
-      }
+      this.clickedAlbum = response.data;
+      this.showAlbum = true;
     },
     async playTrack(trackId, trackTitle, trackArtist) {
       /**
@@ -167,25 +159,17 @@ export default {
         this.audioPlaying.trackId != trackId
       ) {
         const response = await tracks.get(trackId, this.token);
-        // gestion des erreurs
-        const responseJson = await response.json();
-        const errorMessage = errors.constructor(responseJson);
-
-        if (response.status == 200) {
-          const data = await response.blob();
-          const audioUrl = URL.createObjectURL(data);
-          const audioInfos = {
-            url: audioUrl,
-            trackId: trackId,
-            trackTitle: trackTitle,
-            trackArtist: trackArtist,
-            stop: false,
-          };
-          // envoie des donées utiles au composant parent
-          this.sendAudioInfos(audioInfos);
-        } else {
-          alert("Une erreur s'est produite. " + errorMessage);
-        }
+        const data = await response.blob();
+        const audioUrl = URL.createObjectURL(data);
+        const audioInfos = {
+          url: audioUrl,
+          trackId: trackId,
+          trackTitle: trackTitle,
+          trackArtist: trackArtist,
+          stop: false,
+        };
+        // envoie des donées utiles au composant parent
+        this.sendAudioInfos(audioInfos);
       }
       // si la piste séléctionée à déjà été chargée et qu'elle est sur pause
       else if (
@@ -214,13 +198,6 @@ export default {
         track_id: trackId,
       };
       const response = await playlists.addTrack(body, this.token);
-      // gestion des erreurs
-      const responseJson = await response.json();
-      const errorMessage = errors.constructor(responseJson);
-
-      if (response.status != 200) {
-        alert("Une erreur s'est produite. " + errorMessage);
-      }
     },
     displayFunction(trackId) {
       /**
