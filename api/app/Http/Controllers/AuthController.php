@@ -10,7 +10,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Password;
-use Illuminate\Support\Str;
 use Illuminate\Auth\Events\PasswordReset;
 
 class AuthController extends Controller
@@ -64,7 +63,7 @@ class AuthController extends Controller
             return response(['message' => 'Compte créé, vous allez recevoir un mail pour activer votre compte.'], 201);
         } catch (ValidationException $exception) {
 
-            return response(['errors' => $exception->errors()], 422);
+            return response(['erreur' => $exception->errors()], 422);
         } catch (\Exception $exception) {
 
             Log::error($exception);
@@ -102,7 +101,7 @@ class AuthController extends Controller
             return response(['data' => $account, 'message' => 'Utilisateur connecté'], 200);
         } catch (ValidationException $exception) {
 
-            return response(['errors' => $exception->errors()], 422);
+            return response(['erreur' => $exception->errors()], 422);
         } catch (Exception $exception) {
 
             Log::error($exception);
@@ -148,7 +147,7 @@ class AuthController extends Controller
             }
         } catch (ValidationException $exception) {
 
-            return response(['errors' => $exception->errors()], 422);
+            return response(['erreur' => $exception->errors()], 422);
         } catch (Exception $e) {
             Log::error($e);
             return response()->json(['erreur' => 'Une erreur s\'est produite'], 500);
@@ -197,7 +196,7 @@ class AuthController extends Controller
             }
         } catch (ValidationException $exception) {
 
-            return response(['errors' => $exception->errors()], 422);
+            return response(['erreur' => $exception->errors()], 422);
         } catch (Exception $e) {
             Log::error($e);
             return response()->json(['erreur' => 'Une erreur s\'est produite'], 500);
