@@ -14,6 +14,7 @@ export default {
   },
   methods: {
     updateValue(event) {
+      // envoyer la value au composant parent
       const value = event.target.value;
       this.$emit("getValue", value);
     },

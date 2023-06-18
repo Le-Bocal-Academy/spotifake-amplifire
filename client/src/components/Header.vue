@@ -6,10 +6,6 @@
     <slot name="search" />
     <div class="nav">
       <slot />
-      <!-- <YellowButton text="Inscription" link="/" />
-      <BlueButton text="Connexion" link="/login" />
-      <BlueButton text="Déconnexion" @click="logout" />
-      <SettingButton /> -->
     </div>
   </div>
 </template>
@@ -17,14 +13,12 @@
 <script>
 import YellowButton from "../components/UI/yellowButton.vue";
 import BlueButton from "../components/UI/blueButton.vue";
-import SettingButton from "./UI/settingButton.vue";
 import config from "../config.js";
 
 export default {
   components: {
     YellowButton,
     BlueButton,
-    SettingButton,
   },
   methods: {
     async logout() {

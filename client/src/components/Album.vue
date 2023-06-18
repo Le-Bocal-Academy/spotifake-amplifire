@@ -1,6 +1,8 @@
 <template>
   <div class="content">
+    <!-- contenu dynamique et spécifique -->
     <slot></slot>
+    <!-- informations d'en-tête (titre, artiste, style, description) -->
     <section class="albumContainer">
       <div class="albumIcon">
         <i class="fa-solid fa-compact-disc p-XXL"></i>
@@ -24,6 +26,7 @@
         </RedButton>
       </div>
     </section>
+    <!-- liste des pistes audio -->
     <table>
       <thead>
         <tr class="black p-S">
@@ -46,6 +49,7 @@
           <td>{{ track.title }}</td>
           <td>{{ track.duration }}</td>
           <td>
+            <!-- boutons de controle + ajout à une playlist -->
             <div class="actionButton">
               <button
                 class="red bgWhite"
@@ -64,6 +68,7 @@
                 <i class="fa-solid fa-plus"></i>
               </button>
             </div>
+            <!-- menu dynamique (liste des playlists) -->
             <div
               v-if="displayMenu && selectedTrackId == track.id"
               class="playlistMenu"
@@ -110,10 +115,17 @@ export default {
   },
   methods: {
     async playTrack(trackId, trackTitle, trackArtist) {
+      /**
+       * fonction pour recuprérer le fihcier audio
+       * et envoyer les infos au composant parent pour la lecture
+       */
+
+      // si la piste séléctionée n'a pas encore été chargée
       if (
         this.audioPlaying.bool == false &&
         this.audioPlaying.trackId != trackId
       ) {
+        // recupération de
         const response = await tracks.get(trackId, this.token);
         const data = await response.blob();
         const audioUrl = URL.createObjectURL(data);
@@ -124,8 +136,11 @@ export default {
           trackArtist: trackArtist,
           stop: false,
         };
+        // envoie des donées utiles au composant parent
         this.sendAudioInfos(audioInfos);
-      } else if (
+      }
+      // si la piste séléctionée à déjà été chargée et qu'elle est sur pause
+      else if (
         this.audioPlaying.bool == true &&
         this.audioPlaying.trackId == trackId
       ) {
@@ -136,6 +151,7 @@ export default {
           trackArtist: trackArtist,
           stop: true,
         };
+        // envoie des donées utiles au composant parent
         this.sendAudioInfos(audioInfos);
       }
     },
@@ -150,9 +166,12 @@ export default {
         track_id: trackId,
       };
       const response = await playlists.addTrack(body, this.token);
-      console.log(response);
     },
     displayFunction(trackId) {
+      /**
+       * pour afficher la liste des playlist quand on clique sur le bouton ajouter
+       * et mettre à jour la variable selectedTrackId pour envoyer dans la requete
+       */
       this.displayMenu = !this.displayMenu;
       this.selectedTrackId = trackId;
     },
