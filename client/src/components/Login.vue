@@ -28,7 +28,7 @@
 <script>
 import Field from "./UI/fields.vue";
 import RedButton from "./UI/redButton.vue";
-import config from "../config.js";
+import account from "../_lib/requests/account";
 
 export default {
   components: {
@@ -47,43 +47,22 @@ export default {
         email: this.email,
         password: this.password,
       };
-      const options = {
-        method: "post",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
-      };
-      const url = config.url;
-      const data = await fetch(url + "/login", options);
-      const response = await data.json();
-      console.log(response);
-      const token = response.data.token;
-      const firstname = response.data.firstname;
-      const lastname = response.data.lastname;
-      const userId = response.data.id;
-      const nickname = response.data.nickname;
-      const email = response.data.email;
-      // if (data.status === 200 && token) {
-      localStorage.setItem("token", token);
-      localStorage.setItem("firstname", firstname);
-      localStorage.setItem("lastname", lastname);
-      localStorage.setItem("userId", userId);
-      localStorage.setItem("nickname", nickname);
-      localStorage.setItem("email", email);
-      //   const options = {
-      //     method: "get",
-      //     headers: {
-      //       Accept: "application/json",
-      //       "Content-Type": "application/json",
-      //       Authorization: "Bearer " + token,
-      //     },
-      //   };
-      //   const data = await fetch(url + "/disk", options);
-      //   console.log(data);
-      this.$router.push("/home");
-      // }
+      const response = await account.login(body);
+      const responseJson = await response.json();
+
+      if (response.status == 200) {
+        const data = responseJson.data;
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("firstname", data.firstname);
+        localStorage.setItem("lastname", data.lastname);
+        localStorage.setItem("userId", data.id);
+        localStorage.setItem("nickname", data.nickname);
+        localStorage.setItem("email", data.email);
+        this.$router.push("/home");
+      } else {
+        let errorMessage = responseJson["erreur"];
+        alert("Une erreur s'est produite. " + errorMessage);
+      }
     },
     getEmail(value) {
       this.email = value;

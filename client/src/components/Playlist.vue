@@ -41,13 +41,20 @@
 <script>
 import redButton from "./UI/redButton.vue";
 import playlists from "../_lib/requests/playlists.js";
+
 export default {
   components: { redButton },
   props: {
     playlist: Object,
   },
+  data() {
+    return {
+      token: null,
+    };
+  },
   mounted() {
-    console.log(this.playlist);
+    const token = localStorage.getItem("token");
+    this.token = token;
   },
   methods: {
     async delTrack(trackId, playlistId) {
@@ -55,7 +62,7 @@ export default {
         playlist_id: playlistId,
         track_id: trackId,
       };
-      const response = await playlists.delTrack(body);
+      const response = await playlists.delTrack(body, this.token);
       console.log(response.status);
       const trackIndex = this.playlist.tracks.findIndex(
         (track) => track.id === trackId

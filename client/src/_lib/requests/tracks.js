@@ -1,13 +1,11 @@
 import config from "@/config";
 
-const token = localStorage.getItem("token");
-
 export default {
-  get: async (id) => {
+  get: async (id, token) => {
     const options = {
       method: "get",
       headers: {
-        Accept: "application/json",
+        Accept: "audio/mp3",
         "Content-Type": "application/json",
         Authorization: "Bearer " + token,
       },

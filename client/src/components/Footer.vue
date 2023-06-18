@@ -94,7 +94,7 @@
 <style scoped>
 .site-footer {
   background-color: #26272b;
-  padding: 45px 0 20px;
+  padding: 85px 0 20px;
   font-size: 15px;
   line-height: 24px;
   color: #737373;

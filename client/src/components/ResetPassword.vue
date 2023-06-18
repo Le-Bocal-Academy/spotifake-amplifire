@@ -2,19 +2,18 @@
   <section>
     <article class="bgBlack">
       <div class="col forms">
-        <Field label="token" fieldType="text" @getValue="getToken" />
         <Field label="email" fieldType="text" @getValue="getEmail" />
         <Field
           label="nouveau mot de passe"
-          fieldType="text"
+          fieldType="password"
           @getValue="getNewPassword"
         />
         <Field
           label="confirmation du mot de passe"
-          fieldType="text"
+          fieldType="password"
           @getValue="getConfirmationNewPasword"
         />
-        <RedButton text="Changer mon mot de passe" @click="sendNewPassword" />
+        <RedButton text="Changer mon mot de passe" @click="resetPassword" />
       </div>
     </article>
   </section>
@@ -23,7 +22,7 @@
 <script>
 import Field from "./UI/fields.vue";
 import RedButton from "./UI/redButton.vue";
-import config from "../config.js";
+import account from "../_lib/requests/account";
 
 export default {
   components: {
@@ -33,43 +32,50 @@ export default {
   data() {
     return {
       email: "",
-      token: "",
       newPassword: "",
-      confirmationNewPasword: "",
+      confirmPassword: "",
     };
   },
   methods: {
     async resetPassword() {
+      const currentUrl = new URL(window.location.href);
+      const params = new URLSearchParams(currentUrl.search);
+      let token = "";
+      for (const [param] of params.entries()) {
+        token = param;
+      }
       const body = {
-        token: this.token,
+        token: token,
         email: this.email,
         password: this.newPassword,
-        password_confirmation: this.confirmationNewPasword,
+        password_confirmation: this.confirmPassword,
       };
-      const options = {
-        method: "post",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
-      };
-      const url = config.url;
-      const data = await fetch(url + "/resetPassword", options);
-      const response = await data.json();
-      console.log(response);
+      const response = await account.resetPassword(body);
+      const responseJson = await response.json();
+      const errors = responseJson["errors"];
+      let errorMessage = "";
+      Object.keys(errors).forEach((key) => {
+        const errorMessages = errors[key];
+        errorMessage += `${key}: `;
+        errorMessages.forEach((message) => {
+          errorMessage += `${message}\n`;
+        });
+      });
+      if (response.status == 200) {
+        alert("la réinitialisation de votre mot de passe à été effectué");
+        this.$router.push("/login");
+      } else {
+        alert("Une erreur s'est produite. " + errorMessage);
+      }
     },
     getEmail(value) {
       this.email = value;
-    },
-    getToken(value) {
-      this.token = value;
     },
     getNewPassword(value) {
       this.newPassword = value;
     },
     getConfirmationNewPasword(value) {
-      this.confirmationNewPasword = value;
+      this.confirmPassword = value;
     },
   },
 };

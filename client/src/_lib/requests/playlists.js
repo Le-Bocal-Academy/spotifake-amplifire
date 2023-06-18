@@ -1,19 +1,20 @@
 import config from "@/config";
 
-const token = localStorage.getItem("token");
-
+const authorizerHeaders = (token) => {
+  return {
+    Accept: "application/json",
+    "Content-Type": "application/json",
+    Authorization: "Bearer " + token,
+  };
+};
 export default {
-  create: async (body) => {
+  create: async (body, token) => {
     // body : {
     //     "name": "ma playlist"
     // }
     const options = {
       method: "post",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + token,
-      },
+      headers: authorizerHeaders(token),
       body: JSON.stringify(body),
     };
     const url = config.url;
@@ -21,21 +22,17 @@ export default {
     const response = await data.json();
     return response;
   },
-  getAll: async () => {
+  getAll: async (token) => {
     const options = {
       method: "get",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + token,
-      },
+      headers: authorizerHeaders(token),
     };
     const url = config.url;
     const data = await fetch(url + "/playlist", options);
     const response = await data.json();
     return response;
   },
-  addTrack: async (body) => {
+  addTrack: async (body, token) => {
     // body : {
     //     "playlist_id": 3,
     //     "track_id": 11
@@ -43,11 +40,7 @@ export default {
 
     const options = {
       method: "post",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + token,
-      },
+      headers: authorizerHeaders(token),
       body: JSON.stringify(body),
     };
     const url = config.url;
@@ -55,7 +48,7 @@ export default {
     const response = await data.json();
     return response;
   },
-  delTrack: async (body) => {
+  delTrack: async (body, token) => {
     // body : {
     //     "playlist_id": 3,
     //     "track_id": 11
@@ -63,11 +56,7 @@ export default {
 
     const options = {
       method: "post",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + token,
-      },
+      headers: authorizerHeaders(token),
       body: JSON.stringify(body),
     };
     const url = config.url;
@@ -75,18 +64,14 @@ export default {
     const response = await data.json();
     return response;
   },
-  delPlaylist: async (body) => {
+  delPlaylist: async (body, token) => {
     // body : {
     //     "playlist_id": 3
     // }
 
     const options = {
       method: "post",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + token,
-      },
+      headers: authorizerHeaders(token),
       body: JSON.stringify(body),
     };
     const url = config.url;
@@ -94,7 +79,7 @@ export default {
     const response = await data.json();
     return response;
   },
-  renamePlaylist: async (body) => {
+  renamePlaylist: async (body, token) => {
     // body : {
     //     "playlist_id": 4,
     //     "name": "t"
@@ -102,11 +87,7 @@ export default {
 
     const options = {
       method: "put",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + token,
-      },
+      headers: authorizerHeaders(token),
       body: JSON.stringify(body),
     };
     const url = config.url;

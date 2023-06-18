@@ -1,7 +1,12 @@
 <template>
   <div>
     <section v-if="showAlbum" class="albumContainer">
-      <Album :album="this.clickedAlbum" :playlists="this.playlists">
+      <Album
+        @getAudioInfos="sendAudioInfos"
+        :album="this.clickedAlbum"
+        :playlists="this.playlists"
+        :audioPlaying="this.audioPlaying"
+      >
         <template v-slot:default>
           <button @click="showAlbum = false">Revenir à la recherche</button>
         </template>
@@ -44,21 +49,33 @@
               <td>{{ track.album_title }}</td>
               <td>{{ track.duration }}</td>
               <td>
-                <button @click="playTrack(track.id)" class="red bgWhite p-S">
-                  <i class="fa-solid fa-play"></i>
-                </button>
-                <button
-                  @click="displayFunction(track.id)"
-                  class="bgRed white p-S"
-                >
-                  <i class="fa-solid fa-plus"></i>
-                </button>
+                <div class="actionButton">
+                  <button
+                    @click="playTrack(track.id, track.title, track.artist_name)"
+                    class="red bgWhite p-S buttonTrack"
+                  >
+                    <i
+                      v-if="
+                        audioPlaying.bool == true &&
+                        audioPlaying.trackId == track.id
+                      "
+                      class="fa-solid fa-pause"
+                    ></i>
+                    <i v-else class="fa-solid fa-play"></i>
+                  </button>
+                  <button
+                    @click="displayFunction(track.id)"
+                    class="bgRed white p-S buttonTrack"
+                  >
+                    <i class="fa-solid fa-plus"></i>
+                  </button>
+                </div>
                 <div v-if="displayMenu && selectedTrackId == track.id">
                   <p
                     v-for="playlist in this.playlists"
                     :key="playlist.id"
                     class="red"
-                    style="cursor: pointer"
+                    style="cursor: pointer; text-align: center; padding: 2px"
                     @click="addToPlaylist(track.id, playlist.id)"
                   >
                     {{ playlist.name }}
@@ -68,7 +85,6 @@
             </tr>
           </tbody>
         </table>
-        <audio ref="audioplayer" :src="this.trackplay" controls></audio>
       </section>
 
       <section class="albumsSection">
@@ -98,6 +114,7 @@ export default {
   props: {
     data: Object,
     playlists: Array,
+    audioPlaying: Object,
   },
   components: {
     YellowButton,
@@ -111,27 +128,48 @@ export default {
       clickedAlbum: null,
       showAlbum: false,
       selectedTrackId: null,
+      token: null,
     };
+  },
+  mounted() {
+    const token = localStorage.getItem("token");
+    this.token = token;
   },
   methods: {
     async getAlbum(id) {
-      const response = await albums.get(id);
+      const response = await albums.get(id, this.token);
       this.clickedAlbum = response.data;
       this.showAlbum = true;
-      console.log(response);
     },
-    async playTrack(trackId) {
-      console.log("play");
-      const response = await tracks.get(trackId);
-
-      console.log(response);
-      console.log(response.url);
-
-      const audioplayer = this.$refs.audioplayer;
-      audioplayer.src = response.url;
-      audioplayer.play();
-
-      console.log(this.trackplay);
+    async playTrack(trackId, trackTitle, trackArtist) {
+      if (
+        this.audioPlaying.bool == false &&
+        this.audioPlaying.trackId != trackId
+      ) {
+        const response = await tracks.get(trackId, this.token);
+        const data = await response.blob();
+        const audioUrl = URL.createObjectURL(data);
+        const audioInfos = {
+          url: audioUrl,
+          trackId: trackId,
+          trackTitle: trackTitle,
+          trackArtist: trackArtist,
+          stop: false,
+        };
+        this.sendAudioInfos(audioInfos);
+      } else if (
+        this.audioPlaying.bool == true &&
+        this.audioPlaying.trackId == trackId
+      ) {
+        const audioInfos = {
+          url: null,
+          trackId: trackId,
+          trackTitle: trackTitle,
+          trackArtist: trackArtist,
+          stop: true,
+        };
+        this.sendAudioInfos(audioInfos);
+      }
     },
     async addToPlaylist(trackId = null, playlistId = null) {
       this.displayMenu = false;
@@ -140,7 +178,7 @@ export default {
         playlist_id: playlistId,
         track_id: trackId,
       };
-      const response = await playlists.addTrack(body);
+      const response = await playlists.addTrack(body, this.token);
       console.log(response);
     },
     displayFunction(trackId) {
@@ -149,6 +187,9 @@ export default {
     },
     sendCloseSearch() {
       this.$emit("getEvent", false);
+    },
+    sendAudioInfos(audioInfos) {
+      this.$emit("getAudioInfos", audioInfos);
     },
   },
 };
@@ -209,5 +250,19 @@ h2 {
   justify-content: center;
   align-items: center;
   margin-bottom: 10px;
+}
+
+.buttonTrack {
+  padding: 5px;
+  width: 25px;
+  height: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.actionButton {
+  display: flex;
+  justify-content: center;
 }
 </style>
