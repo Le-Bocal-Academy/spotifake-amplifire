@@ -2,7 +2,7 @@
   <div v-if="this.authenticated">
     <Header>
       <template v-slot:search>
-        <form @submit.prevent="search" style="width: 40%">
+        <form @submit.prevent="search" class="form">
           <input
             class="searchBarHome"
             type="text"
@@ -12,7 +12,15 @@
         </form>
       </template>
       <template v-slot:default>
-        <BlueButton text="Déconnexion" @click="logout" />
+        <BlueButton
+          class="deconexionButton"
+          text="Déconnexion"
+          @click="logout"
+        />
+        <i
+          class="fa-solid fa-arrow-right-from-bracket blue p-M"
+          @click="logout"
+        ></i>
       </template>
     </Header>
 
@@ -135,6 +143,7 @@ import BlueButton from "../components/UI/blueButton.vue";
 import Playlists from "../components/AllPlaylists.vue";
 import Playlist from "../components/Playlist.vue";
 import SearchResults from "../components/SearchResults.vue";
+import errors from "../_lib/requests/errors";
 
 export default {
   name: "HomeView",
@@ -191,9 +200,6 @@ export default {
     this.checkAuth();
     this.getPlaylist();
     this.getUserInfos();
-    // this.$nextTick(() => {
-    //   this.audioPlayerPosition();
-    // });
   },
   updated() {
     this.$nextTick(() => {
@@ -210,18 +216,30 @@ export default {
     },
     async getPlaylist() {
       const response = await playlists.getAll(this.token);
-      this.playlists = response.data;
-      if (this.playlists) {
+      // gestion des erreurs
+      const responseJson = await response.json();
+      const errorMessage = errors.constructor(responseJson);
+
+      if (response.status == 200) {
+        this.playlists = response.data;
+      } else {
+        alert("Une erreur s'est produite. " + errorMessage);
       }
     },
     async createPlaylist() {
-      console.log(this.newPlaylistName);
       const body = {
         name: this.newPlaylistName,
       };
       const response = await playlists.create(body, this.token);
-      window.location.reload();
-      console.log(response);
+      // gestion des erreurs
+      const responseJson = await response.json();
+      const errorMessage = errors.constructor(responseJson);
+
+      if (response.status == 200) {
+        window.location.reload();
+      } else {
+        alert("Une erreur s'est produite. " + errorMessage);
+      }
     },
     async addTrack() {
       const body = {
@@ -229,7 +247,13 @@ export default {
         track_id: this.trackId,
       };
       const response = await playlists.addTrack(body, this.token);
-      console.log(response);
+      // gestion des erreurs
+      const responseJson = await response.json();
+      const errorMessage = errors.constructor(responseJson);
+
+      if (response.status != 200) {
+        alert("Une erreur s'est produite. " + errorMessage);
+      }
     },
     getUserInfos() {
       this.nickname = localStorage.getItem("nickname");
@@ -245,8 +269,15 @@ export default {
       }
       this.displaySearchResults = true;
       const response = await search.get(this.searchValue, this.token);
+      // gestion des erreurs
+      const responseJson = await response.json();
+      const errorMessage = errors.constructor(responseJson);
 
-      this.searchData = this.parseResult(response.data);
+      if (response.status == 200) {
+        this.searchData = this.parseResult(response.data);
+      } else {
+        alert("Une erreur s'est produite. " + errorMessage);
+      }
     },
     parseResult(data) {
       let results = {
@@ -322,26 +353,17 @@ export default {
     },
     async logout() {
       const response = await account.logout(this.token);
-      if (response.status === 200) {
+      // gestion des erreurs
+      const responseJson = await response.json();
+      const errorMessage = errors.constructor(responseJson);
+
+      if (response.status == 200) {
         localStorage.clear();
         this.$router.push("/login");
+      } else {
+        alert("Une erreur s'est produite. " + errorMessage);
       }
     },
-    audioPlayerPosition() {
-      const elementToFix = this.$refs.audioPlayer;
-      const footer = this.$refs.footer.$el;
-
-      if (footer && elementToFix) {
-        this.footerPosition = footer.getBoundingClientRect().top;
-
-        // Ajoutez un gestionnaire d'événements de défilement
-        window.addEventListener("scroll", () => {
-          // Vérifiez la position verticale du défilement par rapport au footer
-          this.isFixed = window.scrollY >= this.footerPosition;
-        });
-      }
-    },
-
     playAudio(audioInfos) {
       this.trackControlId = audioInfos.trackId;
       this.trackTitle = audioInfos.trackTitle;
@@ -445,8 +467,25 @@ export default {
   top: 30px;
 }
 
-/* .fixed-element {
-  position: absolute;
-  top: 0;
-} */
+.fa-arrow-right-from-bracket {
+  display: none;
+}
+
+.form {
+  width: 40%;
+}
+
+/* responsive */
+
+@media screen and (max-width: 600px) {
+  .deconexionButton {
+    display: none;
+  }
+  .fa-arrow-right-from-bracket {
+    display: block;
+  }
+  .form {
+    width: 100%;
+  }
+}
 </style>

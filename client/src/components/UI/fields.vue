@@ -23,6 +23,9 @@ export default {
 </script>
 
 <style scoped>
+.fields {
+  text-align: left;
+}
 .fields input {
   margin: 5px 0;
   padding: 8px;

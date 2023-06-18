@@ -7,7 +7,6 @@
       </template>
     </Header>
     <ForgotPassword />
-    <ResetPassword />
     <Footer />
   </div>
 </template>

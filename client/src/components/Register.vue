@@ -3,8 +3,8 @@
     <article class="bgBlack">
       <div class="article-head">
         <p class="p-M yellow">AmpliFire premium</p>
-        <p class="p-XXL">2 mois offerts</p>
-        <p class="p-M">Puis 9,99€ /mois*</p>
+        <p class="p-XXL offer">2 mois offerts</p>
+        <p class="p-M offerUnderLine">Puis 9,99€ /mois*</p>
       </div>
       <div class="col forms">
         <div class="socialMedia">
@@ -55,6 +55,7 @@
 import Field from "./UI/fields.vue";
 import RedButton from "./UI/redButton.vue";
 import account from "../_lib/requests/account";
+import errors from "../_lib/requests/errors.js";
 
 export default {
   components: {
@@ -81,9 +82,15 @@ export default {
         password: this.password,
         password_confirmation: this.password_confirmation,
       };
-      const data = await account.register(body, token);
+      const response = await account.register(body);
+
+      // initialisation du message d'erreur
+      const responseJson = await response.json();
+      const errorMessage = errors.constructor(responseJson);
       if (data.status === 201) {
         this.$router.push("/login");
+      } else {
+        alert("Une erreur s'est produite. " + errorMessage);
       }
     },
     getNickname(value) {
@@ -121,7 +128,6 @@ section {
   margin-bottom: 150px;
 }
 article {
-  width: 40%;
   color: white;
   border-radius: 10px;
   padding: 50px 0 20px;
@@ -129,6 +135,7 @@ article {
   flex-direction: column;
   gap: 50px;
   align-items: center;
+  margin: 10%;
 }
 
 .article-head {
@@ -175,5 +182,24 @@ article {
   align-items: center;
   gap: 20px;
   margin-bottom: 20px;
+}
+
+/* responsive */
+@media screen and (max-width: 1000px) {
+  article {
+    margin: 5% 10%;
+  }
+}
+
+@media screen and (max-width: 650px) {
+  .socialMedia {
+    display: none;
+  }
+  .offer {
+    font-size: 30px;
+  }
+  .offerUnderLine {
+    font-size: 15px;
+  }
 }
 </style>

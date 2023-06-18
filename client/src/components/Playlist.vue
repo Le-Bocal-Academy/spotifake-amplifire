@@ -41,6 +41,7 @@
 <script>
 import redButton from "./UI/redButton.vue";
 import playlists from "../_lib/requests/playlists.js";
+import errors from "../_lib/requests/errors";
 
 export default {
   components: { redButton },
@@ -63,12 +64,20 @@ export default {
         track_id: trackId,
       };
       const response = await playlists.delTrack(body, this.token);
-      // effacer la piste audio de la variable playlist en attendant un reload
-      const trackIndex = this.playlist.tracks.findIndex(
-        (track) => track.id === trackId
-      );
-      if (trackIndex !== -1) {
-        this.playlist.tracks.splice(trackIndex, 1);
+      // gestion des erreurs
+      const responseJson = await response.json();
+      const errorMessage = errors.constructor(responseJson);
+
+      if (response.status == 200) {
+        // effacer la piste audio de la variable playlist en attendant un reload
+        const trackIndex = this.playlist.tracks.findIndex(
+          (track) => track.id === trackId
+        );
+        if (trackIndex !== -1) {
+          this.playlist.tracks.splice(trackIndex, 1);
+        }
+      } else {
+        alert("Une erreur s'est produite. " + errorMessage);
       }
     },
   },

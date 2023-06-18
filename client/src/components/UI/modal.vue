@@ -32,12 +32,27 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 40px;
-  padding: 3%;
+  padding: 40px 50px;
   border-radius: 10px;
   align-items: center;
 }
 
 h2 {
   margin: 0;
+}
+
+@media screen and (max-width: 600px) {
+  h2 {
+    font-size: 20px;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .popup-content {
+    padding: 20px;
+    width: 70%;
+  }
+}
+@media screen and (max-width: 400px) {
 }
 </style>
