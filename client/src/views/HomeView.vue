@@ -20,7 +20,9 @@
       v-if="searchData && displaySearchResults"
       :data="this.searchData"
       :playlists="this.playlists"
+      :audioPlaying="audioPlaying"
       @getEvent="getSearchDisplay"
+      @getAudioInfos="playAudio"
     />
 
     <div
@@ -105,8 +107,22 @@
         </Playlist>
       </div>
     </div>
-
-    <Footer />
+    <div class="bgWhite divAudioBar">
+      <div class="audioController">
+        <p style="padding: 10px 20px" class="red">
+          {{ trackTitle }} - {{ trackArtist }}
+        </p>
+        <audio
+          style="width: 100%"
+          ref="audioPlayer"
+          src=""
+          controls
+          @play="handleAudioPlay"
+          @pause="handleAudioPause"
+        ></audio>
+      </div>
+    </div>
+    <Footer ref="footer" />
   </div>
 </template>
 
@@ -144,7 +160,7 @@ export default {
     return {
       token: null,
       authenticated: false,
-      audioUrl: "chemin_vers_le_fichier_audio.mp3",
+      audioUrl: "",
       audioElement: null,
       placeholderContent:
         '<i class="fa-solid fa-magnifying-glass"></i> Rechercher',
@@ -164,15 +180,31 @@ export default {
       searchData: null,
       displaySearchResults: false,
       displayPlaylist: false,
+      isFixed: false,
+      footerPosition: 0,
+      audioPlaying: {
+        bool: false,
+        trackId: null,
+      },
+      trackControlId: null,
+      trackTitle: "",
+      trackArtist: "",
     };
   },
   mounted() {
     const token = localStorage.getItem("token");
     this.token = token;
-    console.log(token);
     this.checkAuth();
     this.getPlaylist();
     this.getUserInfos();
+    // this.$nextTick(() => {
+    //   this.audioPlayerPosition();
+    // });
+  },
+  updated() {
+    this.$nextTick(() => {
+      this.audioPlayerPosition();
+    });
   },
   methods: {
     checkAuth() {
@@ -183,9 +215,7 @@ export default {
       }
     },
     async getPlaylist() {
-      console.log(this.token);
       const response = await playlists.getAll(this.token);
-      console.log(response.data);
       this.playlists = response.data;
       if (this.playlists) {
       }
@@ -220,10 +250,8 @@ export default {
         window.location.reload();
       }
       this.displaySearchResults = true;
-      console.log(this.searchValue);
       const response = await search.get(this.searchValue, this.token);
 
-      console.log(response.data);
       this.searchData = this.parseResult(response.data);
     },
     parseResult(data) {
@@ -231,36 +259,63 @@ export default {
         tracks: [],
         albums: [],
       };
-      if (data.tracks) {
+
+      // TRACKS
+      if (data.tracks.length > 0) {
         data.tracks.forEach((track) => {
           results["tracks"].push(track);
         });
+        console.log("tracks");
       }
+
+      // ALBUMS
       if (data.albums.length > 0) {
         data.albums.forEach((album) => {
           results["albums"].push(album);
         });
       }
-      if (data.artists.length > 0 && data.artists.artist_tracks) {
-        data.artists.artist_tracks.forEach((track) => {
-          results["tracks"].push(track);
+
+      // ARTIST TRACKS
+      if (data.artists.length > 0) {
+        data.artists.forEach((artist) => {
+          if (artist.artist_tracks.length > 0) {
+            artist.artist_tracks.forEach((track) => {
+              results["tracks"].push(track);
+            });
+          }
         });
       }
-      if (data.artists.length > 0 && data.artists.artist_albums) {
-        this.data.artists.artist_albums.forEach((album) => {
-          results["albums"].push(album);
+
+      // ARTIST ALBUMS
+      if (data.artists.length > 0) {
+        data.artists.forEach((artist) => {
+          if (artist.artist_albums.length > 0) {
+            artist.artist_albums.forEach((album) => {
+              results["albums"].push(album);
+            });
+          }
         });
       }
+
+      // STYLES ALBUMS
       if (data.styles.length > 0 && data.styles[0].albums) {
         data.styles[0].albums.forEach((album) => {
           results["albums"].push(album);
         });
       }
 
-      console.log(results);
+      // DUPLICATE CHECKING
+      const uniqueTracks = Array.from(
+        new Set(results["tracks"].map((track) => track.id))
+      ).map((id) => results["tracks"].find((track) => track.id === id));
 
-      results["tracks"] = [...new Set(results["tracks"])];
-      results["albums"] = [...new Set(results["albums"])];
+      const uniqueAlbums = Array.from(
+        new Set(results["albums"].map((album) => album.id))
+      ).map((id) => results["albums"].find((album) => album.id === id));
+
+      // RESULT
+      results["tracks"] = uniqueTracks;
+      results["albums"] = uniqueAlbums;
 
       return results;
     },
@@ -277,6 +332,54 @@ export default {
         localStorage.clear();
         this.$router.push("/login");
       }
+    },
+    audioPlayerPosition() {
+      const elementToFix = this.$refs.audioPlayer;
+      const footer = this.$refs.footer.$el;
+
+      if (footer && elementToFix) {
+        this.footerPosition = footer.getBoundingClientRect().top;
+
+        // Ajoutez un gestionnaire d'événements de défilement
+        window.addEventListener("scroll", () => {
+          // Vérifiez la position verticale du défilement par rapport au footer
+          this.isFixed = window.scrollY >= this.footerPosition;
+        });
+      }
+    },
+
+    playAudio(audioInfos) {
+      this.trackControlId = audioInfos.trackId;
+      this.trackTitle = audioInfos.trackTitle;
+      this.trackArtist = audioInfos.trackArtist;
+      if (audioInfos.stop == false) {
+        this.$refs.audioPlayer.src = audioInfos.url;
+        this.$refs.audioPlayer.addEventListener("loadedmetadata", () => {
+          this.$refs.audioPlayer.play();
+          this.audioPlaying = {
+            bool: true,
+            trackId: audioInfos.trackId,
+          };
+        });
+      } else {
+        this.$refs.audioPlayer.pause();
+        this.audioPlaying = {
+          bool: false,
+          trackId: audioInfos.trackId,
+        };
+      }
+    },
+    handleAudioPlay() {
+      this.audioPlaying = {
+        bool: true,
+        trackId: this.trackControlId,
+      };
+    },
+    handleAudioPause() {
+      this.audioPlaying = {
+        bool: false,
+        trackId: this.trackControlId,
+      };
     },
   },
 };
@@ -338,4 +441,18 @@ export default {
 .searchBarHome:focus {
   outline: none;
 }
+.divAudioBar {
+  display: flex;
+  justify-content: center;
+}
+.audioController {
+  width: 90%;
+  position: relative;
+  top: 30px;
+}
+
+/* .fixed-element {
+  position: absolute;
+  top: 0;
+} */
 </style>

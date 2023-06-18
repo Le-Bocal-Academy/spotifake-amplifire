@@ -5,7 +5,7 @@ export default {
     const options = {
       method: "get",
       headers: {
-        Accept: "audio/mpeg",
+        Accept: "audio/mp3",
         "Content-Type": "application/json",
         Authorization: "Bearer " + token,
       },

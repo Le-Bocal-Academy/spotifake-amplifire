@@ -47,13 +47,20 @@
           <td>{{ track.duration }}</td>
           <td>
             <div class="actionButton">
-              <button class="red bgWhite" @click="playTrack(track.id)">
-                <i class="fa-solid fa-play"></i>
-              </button>
               <button
-                class="bgRed white deleteTrackButton"
-                @click="displayFunction(track.id)"
+                class="red bgWhite"
+                @click="playTrack(track.id, track.title, track.artist_name)"
               >
+                <i
+                  v-if="
+                    audioPlaying.bool == true &&
+                    audioPlaying.trackId == track.id
+                  "
+                  class="fa-solid fa-pause"
+                ></i>
+                <i v-else class="fa-solid fa-play"></i>
+              </button>
+              <button class="bgRed white" @click="displayFunction(track.id)">
                 <i class="fa-solid fa-plus"></i>
               </button>
             </div>
@@ -65,7 +72,7 @@
                 v-for="playlist in this.playlists"
                 :key="playlist.id"
                 class="red"
-                style="cursor: pointer"
+                style="cursor: pointer; text-align: center; padding: 5px"
                 @click="addToPlaylist(track.id, playlist.id)"
               >
                 {{ playlist.name }}
@@ -78,6 +85,7 @@
   </div>
 </template>
 <script>
+import tracks from "@/_lib/requests/tracks.js";
 import RedButton from "@/components/UI/redButton.vue";
 import playlists from "@/_lib/requests/playlists.js";
 export default {
@@ -87,6 +95,7 @@ export default {
   props: {
     album: Object,
     playlists: Array,
+    audioPlaying: Object,
   },
   data() {
     return {
@@ -100,10 +109,38 @@ export default {
     this.token = token;
   },
   methods: {
-    async playTrack(trackId) {
-      console.log("play");
-      const response = await tracks.get(trackId, this.token);
-      console.log(response);
+    async playTrack(trackId, trackTitle, trackArtist) {
+      if (
+        this.audioPlaying.bool == false &&
+        this.audioPlaying.trackId != trackId
+      ) {
+        const response = await tracks.get(trackId, this.token);
+        const data = await response.blob();
+        const audioUrl = URL.createObjectURL(data);
+        const audioInfos = {
+          url: audioUrl,
+          trackId: trackId,
+          trackTitle: trackTitle,
+          trackArtist: trackArtist,
+          stop: false,
+        };
+        this.sendAudioInfos(audioInfos);
+      } else if (
+        this.audioPlaying.bool == true &&
+        this.audioPlaying.trackId == trackId
+      ) {
+        const audioInfos = {
+          url: null,
+          trackId: trackId,
+          trackTitle: trackTitle,
+          trackArtist: trackArtist,
+          stop: true,
+        };
+        this.sendAudioInfos(audioInfos);
+      }
+    },
+    sendAudioInfos(audioInfos) {
+      this.$emit("getAudioInfos", audioInfos);
     },
     async addToPlaylist(trackId = null, playlistId = null) {
       this.displayMenu = false;
