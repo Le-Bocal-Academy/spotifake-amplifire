@@ -39,4 +39,35 @@ div {
 .slogan {
   margin: 100px;
 }
+
+/* responsive */
+@media screen and (max-width: 1200px) {
+  .slogan {
+    margin: 50px;
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  .slogan h2 {
+    font-size: 40px;
+  }
+}
+
+@media screen and (max-width: 800px) {
+  .slogan h2 {
+    font-size: 35px;
+  }
+  .slogan p {
+    font-size: 20px;
+  }
+}
+
+@media screen and (max-width: 530px) {
+  .slogan h2 {
+    font-size: 27px;
+  }
+  .slogan p {
+    font-size: 20px;
+  }
+}
 </style>

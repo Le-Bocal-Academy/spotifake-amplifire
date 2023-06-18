@@ -29,6 +29,7 @@
 import Field from "./UI/fields.vue";
 import RedButton from "./UI/redButton.vue";
 import account from "../_lib/requests/account";
+import errors from "../_lib/requests/errors";
 
 export default {
   components: {
@@ -61,7 +62,7 @@ export default {
         localStorage.setItem("email", data.email);
         this.$router.push("/home");
       } else {
-        let errorMessage = responseJson["erreur"];
+        const errorMessage = errors.constructor(responseJson);
         alert("Une erreur s'est produite. " + errorMessage);
       }
     },
@@ -85,7 +86,6 @@ section {
   margin-top: 5%;
 }
 article {
-  width: 30%;
   color: white;
   border-radius: 10px;
   padding: 50px 0 20px;
@@ -93,6 +93,7 @@ article {
   flex-direction: column;
   gap: 70px;
   align-items: center;
+  margin: 10%;
 }
 
 .article-head {

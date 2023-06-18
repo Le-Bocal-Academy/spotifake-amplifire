@@ -23,6 +23,7 @@
 import Field from "./UI/fields.vue";
 import RedButton from "./UI/redButton.vue";
 import account from "../_lib/requests/account";
+import errors from "../_lib/requests/errors";
 
 export default {
   components: {
@@ -52,18 +53,9 @@ export default {
         password_confirmation: this.confirmPassword,
       };
       const response = await account.resetPassword(body);
-      // initialisation du message d'erreur
-      const responseJson = await response.json();
-      const errors = responseJson["errors"];
-      let errorMessage = "";
-      Object.keys(errors).forEach((key) => {
-        const errorMessages = errors[key];
-        errorMessage += `${key}: `;
-        errorMessages.forEach((message) => {
-          errorMessage += `${message}\n`;
-        });
-      });
       // gestion des erreurs
+      const responseJson = await response.json();
+      const errorMessage = errors.constructor(responseJson);
       if (response.status == 200) {
         alert("la réinitialisation de votre mot de passe à été effectué");
         this.$router.push("/login");
@@ -95,7 +87,7 @@ section {
   margin-top: 5%;
 }
 article {
-  width: 30%;
+  width: 50%;
   color: white;
   border-radius: 10px;
   padding: 50px 0 20px;
@@ -103,6 +95,7 @@ article {
   flex-direction: column;
   gap: 70px;
   align-items: center;
+  margin: 10%;
 }
 
 .article-head {

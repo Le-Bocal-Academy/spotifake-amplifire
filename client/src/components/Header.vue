@@ -1,7 +1,8 @@
 <template>
   <div class="bgBlack header">
     <div class="logo">
-      <img alt="Logo" src="../assets/logo.png" />
+      <img class="entireLogo" alt="Logo" src="../assets/logo.png" />
+      <img class="logoSimple" alt="Logo" src="../assets/logoSimple.png" />
     </div>
     <slot name="search" />
     <div class="nav">
@@ -63,5 +64,50 @@ export default {
   display: flex;
   align-items: center;
   gap: 20px;
+}
+
+.logoSimple {
+  display: none;
+}
+
+/* responsive */
+
+@media screen and (max-width: 1200px) {
+  .logo {
+    width: 17%;
+  }
+}
+
+@media screen and (max-width: 1000px) {
+  .logo {
+    width: 20%;
+  }
+}
+
+@media screen and (max-width: 800px) {
+  .entireLogo {
+    display: none;
+  }
+  .logoSimple {
+    display: block;
+  }
+  .logo {
+    width: 12%;
+  }
+  .header {
+    padding: 10px 20px;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .logo {
+    display: none;
+  }
+  .nav {
+    gap: 15px;
+  }
+  .header {
+    padding: 10px 5px;
+  }
 }
 </style>

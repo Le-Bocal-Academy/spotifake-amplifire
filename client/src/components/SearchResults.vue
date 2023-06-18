@@ -114,6 +114,8 @@ import playlists from "@/_lib/requests/playlists.js";
 import albums from "@/_lib/requests/albums.js";
 import YellowButton from "../components/UI/yellowButton.vue";
 import Album from "../components/Album.vue";
+import errors from "../_lib/requests/errors";
+
 export default {
   props: {
     data: Object,
@@ -142,8 +144,16 @@ export default {
   methods: {
     async getAlbum(id) {
       const response = await albums.get(id, this.token);
-      this.clickedAlbum = response.data;
-      this.showAlbum = true;
+      // gestion des erreurs
+      const responseJson = await response.json();
+      const errorMessage = errors.constructor(responseJson);
+
+      if (response.status == 200) {
+        this.clickedAlbum = response.data;
+        this.showAlbum = true;
+      } else {
+        alert("Une erreur s'est produite. " + errorMessage);
+      }
     },
     async playTrack(trackId, trackTitle, trackArtist) {
       /**
@@ -157,17 +167,25 @@ export default {
         this.audioPlaying.trackId != trackId
       ) {
         const response = await tracks.get(trackId, this.token);
-        const data = await response.blob();
-        const audioUrl = URL.createObjectURL(data);
-        const audioInfos = {
-          url: audioUrl,
-          trackId: trackId,
-          trackTitle: trackTitle,
-          trackArtist: trackArtist,
-          stop: false,
-        };
-        // envoie des donées utiles au composant parent
-        this.sendAudioInfos(audioInfos);
+        // gestion des erreurs
+        const responseJson = await response.json();
+        const errorMessage = errors.constructor(responseJson);
+
+        if (response.status == 200) {
+          const data = await response.blob();
+          const audioUrl = URL.createObjectURL(data);
+          const audioInfos = {
+            url: audioUrl,
+            trackId: trackId,
+            trackTitle: trackTitle,
+            trackArtist: trackArtist,
+            stop: false,
+          };
+          // envoie des donées utiles au composant parent
+          this.sendAudioInfos(audioInfos);
+        } else {
+          alert("Une erreur s'est produite. " + errorMessage);
+        }
       }
       // si la piste séléctionée à déjà été chargée et qu'elle est sur pause
       else if (
@@ -196,6 +214,13 @@ export default {
         track_id: trackId,
       };
       const response = await playlists.addTrack(body, this.token);
+      // gestion des erreurs
+      const responseJson = await response.json();
+      const errorMessage = errors.constructor(responseJson);
+
+      if (response.status != 200) {
+        alert("Une erreur s'est produite. " + errorMessage);
+      }
     },
     displayFunction(trackId) {
       /**

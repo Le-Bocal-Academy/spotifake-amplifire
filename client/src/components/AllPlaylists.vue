@@ -72,9 +72,11 @@
 </template>
 <script>
 import playlists from "@/_lib/requests/playlists.js";
+import errors from "../_lib/requests/errors";
 import Modal from "@/components/UI/modal.vue";
 import Fields from "@/components/UI/fields.vue";
 import RedButton from "@/components/UI/redButton.vue";
+import BlueButton from "@/components/UI/blueButton.vue";
 
 export default {
   props: {
@@ -84,6 +86,7 @@ export default {
     Modal,
     Fields,
     RedButton,
+    BlueButton,
   },
   data() {
     return {
@@ -110,15 +113,20 @@ export default {
         playlist_id: id,
       };
       const response = await playlists.delPlaylist(body, this.token);
-      // effacer la playlist de la variable playlist en attendant un reload
-      const playlistIndex = this.playlists.findIndex(
-        (playlist) => playlist.id === id
-      );
-      if (playlistIndex !== -1) {
-        this.playlists.splice(playlistIndex, 1);
+      const responseJson = await response.json();
+      const errorMessage = errors.constructor(responseJson);
+      if (response.status == 200) {
+        // effacer la playlist de la variable playlist en attendant un reload
+        const playlistIndex = this.playlists.findIndex(
+          (playlist) => playlist.id === id
+        );
+        if (playlistIndex !== -1) {
+          this.playlists.splice(playlistIndex, 1);
+        }
+        this.displayMenu = false;
+      } else {
+        alert("Une erreur s'est produite. " + errorMessage);
       }
-      this.displayMenu = false;
-      console.log(response);
     },
     async renamePlaylist() {
       const body = {
@@ -126,8 +134,16 @@ export default {
         name: this.playlistName,
       };
       const response = await playlists.renamePlaylist(body, this.token);
-      // reload de la page pour afficher les changements apportés
-      window.location.reload();
+      // gestion des erreurs
+      const responseJson = await response.json();
+      const errorMessage = errors.constructor(responseJson);
+
+      if (response.status == 200) {
+        // reload de la page pour afficher les changements apportés
+        window.location.reload();
+      } else {
+        alert("Une erreur s'est produite. " + errorMessage);
+      }
     },
     getPlaylistName(value) {
       // récuperer la valeur envoyée du formulaire
@@ -184,5 +200,21 @@ export default {
 }
 #menu2 {
   border-radius: 0 0 5px 5px;
+}
+
+/* responsive */
+@media screen and (max-width: 600px) {
+  .playlistIcon {
+    display: none;
+  }
+  .iconsContainer {
+    display: flex;
+    margin-bottom: 60px;
+    flex-direction: column;
+  }
+  .playlistIcons {
+    width: 100%;
+    padding: 5px;
+  }
 }
 </style>
